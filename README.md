@@ -96,9 +96,15 @@ setting rather than a rewrite. Three are built in:
 
 | | Cost | Notes |
 | --- | --- | --- |
-| **Google Gemini** | Free | No card required, no expiry. The default. |
-| **Groq** | Free | Noticeably the fastest — replies land almost instantly. |
+| **Google Gemini** | Free | No card required, no expiry, and the most headroom. The default. |
+| **Groq** | Free | Noticeably the fastest, but meters tokens by the minute — fine for conversation, tighter than Gemini. |
 | **Claude** | Paid | The best teacher of the three. |
+
+Groq is the better *feeling* of the two free options — replies land almost
+instantly, which matters when you are trying to hold a conversation — but its
+allowance is measured per minute, so Gemini is the safer default. A limit that
+clears within a few seconds is waited out and retried once rather than shown
+as an error.
 
 Model IDs get retired — Groq withdrew its Llama models in August 2026 — so
 Settings has a model-name box. If a provider renames a model, type the new
@@ -107,6 +113,13 @@ name; no code change, no redeploy.
 Speech recognition and synthesis use the browser's own engines, so audio never
 reaches a paid API at all. Only the text costs anything, and on the free tiers
 it costs nothing. On Claude, a ten-minute conversation runs about four cents.
+
+Three things keep that number down, and they are what make the free tiers
+comfortable rather than marginal: a reply is only translated when subtitles are
+actually on screen; each turn resends the last ten turns rather than the whole
+conversation; and the assessment rubric — ~950 tokens — is sent once per four
+turns instead of once per turn, with the remainder scored when a conversation
+ends. Together that is roughly a third of the original traffic.
 
 ## Privacy
 

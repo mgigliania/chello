@@ -22,7 +22,7 @@ import type {
   Preferences,
   SessionRecord,
 } from "@/lib/types";
-import { passageText, toPassages } from "@/lib/types";
+import { passageRevisionKey, passageText, toPassages } from "@/lib/types";
 
 export type Status = "idle" | "listening" | "thinking" | "speaking";
 
@@ -47,6 +47,14 @@ interface Options {
  *  more expensive than the last, which matters most on a free tier's
  *  tokens-per-minute allowance. */
 const CONTEXT_TURNS = 10;
+
+/** How many learner turns to score in one call.
+ *
+ *  The rubric is ~950 tokens and it used to be resent for every single turn,
+ *  which cost more than the conversation itself. Batching trades a couple of
+ *  minutes' delay before a word appears — the Words screen, not the live
+ *  conversation — for roughly a third of the traffic. */
+const ASSESS_BATCH = 4;
 
 const newID = () =>
   typeof crypto !== "undefined" && "randomUUID" in crypto
@@ -132,7 +140,7 @@ export function useConversation({
    *  a stale copy after the store's callbacks change identity. */
   const helpersRef = useRef<{
     translate(text: string): Promise<void>;
-    assessLatest(): Promise<void>;
+    assessPending(): Promise<void>;
     commitUserTurn(text: string, typed: boolean): void;
   }>(null!);
 
@@ -276,7 +284,7 @@ export function useConversation({
 
         // Subtitles and assessment are side quests: neither may delay speech.
         void helpersRef.current.translate(text);
-        void helpersRef.current.assessLatest();
+        void helpersRef.current.assessPending();
 
         setStatus("speaking");
         listenerRef.current?.suspend();
@@ -342,48 +350,64 @@ export function useConversation({
     [headers, language, routing, update],
   );
 
-  /** Score the most recent completed learner turn. */
-  const assessLatest = useCallback(async () => {
+  /** Turns not yet scored, oldest first. */
+  const unscored = (session: SessionRecord) => {
+    const scored = new Set(session.assessments.map((a) => a.passageID));
+    return toPassages(session.fragments).filter(
+      (passage) => passage.speaker === "user" && !scored.has(passage.id),
+    );
+  };
+
+  const merge = (existing: Assessment[], incoming: Assessment[]) => {
+    const known = new Set(existing.map((a) => a.passageID));
+    return [...existing, ...incoming.filter((a) => !known.has(a.passageID))];
+  };
+
+  /** Score every outstanding turn in one call. Returns null on any failure —
+   *  a missed assessment costs that evidence, never the conversation. */
+  const runAssessment = useCallback(
+    async (session: SessionRecord): Promise<Assessment[] | null> => {
+      if (!apiKeyRef.current) return null;
+      const pending = unscored(session);
+      if (pending.length === 0) return null;
+
+      try {
+        const response = await fetch("/api/assess", {
+          method: "POST",
+          headers: headers(),
+          body: JSON.stringify({
+            ...routing(),
+            system: assessmentPrompt(language),
+            schema: ASSESSMENT_SCHEMA,
+            transcript: transcriptContext(session, pending),
+            targets: pending.map((passage) => ({
+              passageID: passage.id,
+              revisionKey: passageRevisionKey(passage),
+            })),
+            context: session.themeID ?? "free",
+          }),
+        });
+        if (!response.ok) return null;
+        const body = (await response.json()) as { assessments?: Assessment[] };
+        return body.assessments ?? null;
+      } catch {
+        return null;
+      }
+    },
+    [headers, language, routing],
+  );
+
+  /** Called after each reply; only spends a request once enough has piled up. */
+  const assessPending = useCallback(async () => {
     const current = sessionRef.current;
-    if (!current || !apiKeyRef.current) return;
-
-    const passages = toPassages(current.fragments);
-    const target = [...passages].reverse().find((p) => p.speaker === "user");
-    if (!target) return;
-    if (current.assessments.some((a) => a.passageID === target.id)) return;
-
-    const revisionKey = target.fragments
-      .map((fragment) => `${fragment.id}:${fragment.revision}`)
-      .join(",");
-
-    try {
-      const response = await fetch("/api/assess", {
-        method: "POST",
-        headers: headers(),
-        body: JSON.stringify({
-          ...routing(),
-          system: assessmentPrompt(language),
-          schema: ASSESSMENT_SCHEMA,
-          transcript: transcriptContext(current, target),
-          passageID: target.id,
-          revisionKey,
-          context: current.themeID ?? "free",
-        }),
-      });
-      if (!response.ok) return;
-      const assessment = (await response.json()) as Assessment;
-      update((existing) => ({
-        ...existing,
-        assessments: existing.assessments.some(
-          (a) => a.passageID === assessment.passageID,
-        )
-          ? existing.assessments
-          : [...existing.assessments, assessment],
-      }));
-    } catch {
-      // A missed assessment costs one turn of evidence, nothing more.
-    }
-  }, [headers, language, routing, update]);
+    if (!current || unscored(current).length < ASSESS_BATCH) return;
+    const results = await runAssessment(current);
+    if (!results?.length) return;
+    update((existing) => ({
+      ...existing,
+      assessments: merge(existing.assessments, results),
+    }));
+  }, [runAssessment, update]);
 
   const commitUserTurn = useCallback(
     (text: string, typed: boolean) => {
@@ -486,6 +510,10 @@ export function useConversation({
 
   const end = useCallback(
     (reason = "ended") => {
+      const finished = sessionRef.current
+        ? { ...sessionRef.current, endedAt: Date.now(), endReason: reason }
+        : null;
+
       abortRef.current?.abort();
       listenerRef.current?.stop();
       cancelSpeech();
@@ -493,13 +521,23 @@ export function useConversation({
       pendingRef.current = [];
       setStatus("idle");
       setInterim("");
-      if (sessionRef.current) {
-        update((current) => ({ ...current, endedAt: Date.now(), endReason: reason }));
-      }
       setSession(null);
       sessionRef.current = null;
+
+      if (!finished) return;
+      onCommit(finished);
+      // The last few turns have not reached the batch size, so score them now
+      // rather than lose them. The session is already closed; this only adds.
+      void runAssessment(finished).then((results) => {
+        if (results?.length) {
+          onCommit({
+            ...finished,
+            assessments: merge(finished.assessments, results),
+          });
+        }
+      });
     },
-    [update],
+    [onCommit, runAssessment],
   );
 
   const toggleMic = useCallback(() => {
@@ -587,7 +625,7 @@ export function useConversation({
     [language, respond, start, update],
   );
 
-  helpersRef.current = { translate, assessLatest, commitUserTurn };
+  helpersRef.current = { translate, assessPending, commitUserTurn };
 
   const transcript = useMemo(
     () => (session ? toPassages(session.fragments) : []),

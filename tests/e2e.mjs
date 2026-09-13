@@ -41,33 +41,36 @@ await context.route("**/api/translate", async (route) => {
     body: JSON.stringify({ text: "Hi! How are you today?" }),
   });
 });
+let lastAssessBody = null;
 await context.route("**/api/assess", async (route) => {
   seen.assess += 1;
-  const body = JSON.parse(route.request().postData() ?? "{}");
+  lastAssessBody = JSON.parse(route.request().postData() ?? "{}");
   await route.fulfill({
     status: 200,
     contentType: "application/json",
     body: JSON.stringify({
-      passageID: body.passageID,
-      revisionKey: body.revisionKey,
-      outcome: "success",
-      suggestedLevel: 1,
-      nextGoal: "Chiedi come sta.",
-      capability: "Can greet and say how they are",
-      words: [
-        {
-          lemma: "stare",
-          meaning: "to be (feeling)",
-          form: "sto",
-          kind: "independent",
-          confidence: 0.95,
-          sourceIDs: [body.passageID],
-          quote: "sto bene",
-          language: "it",
-        },
-      ],
-      createdAt: Date.now(),
-      context: body.context,
+      assessments: lastAssessBody.targets.map((target) => ({
+        passageID: target.passageID,
+        revisionKey: target.revisionKey,
+        outcome: "success",
+        suggestedLevel: 1,
+        nextGoal: "Chiedi come sta.",
+        capability: "Can greet and say how they are",
+        words: [
+          {
+            lemma: "stare",
+            meaning: "to be (feeling)",
+            form: "sto",
+            kind: "independent",
+            confidence: 0.95,
+            sourceIDs: [target.passageID],
+            quote: "sto bene",
+            language: "it",
+          },
+        ],
+        createdAt: Date.now(),
+        context: lastAssessBody.context,
+      })),
     }),
   });
 });
@@ -134,8 +137,14 @@ await page.getByRole("button", { name: "Type instead" }).click();
 await page.getByPlaceholder("Write a reply…").fill("Sto bene, grazie!");
 await page.getByRole("button", { name: "Send" }).click();
 await page.waitForTimeout(1500);
-console.log("✓ typed turn sent. chat calls:", seen.chat, "assess calls:", seen.assess);
+console.log("✓ typed turn sent. chat calls:", seen.chat);
 console.log("  transcript sent to model:", JSON.stringify(lastChatBody.messages));
+
+// Assessment is batched, so a single turn must NOT have spent a request yet.
+if (seen.assess !== 0) {
+  problems.push(`assessment fired early: ${seen.assess} call(s) after one turn`);
+}
+console.log("\u2713 assessment held back after one turn (batched)");
 
 // 3. Tapping a word in the tutor's line explains it.
 await context.route("**/api/lookup", async (route) => {
@@ -150,19 +159,27 @@ await page.getByText("asks how someone is feeling").waitFor({ timeout: 5000 });
 await page.keyboard.press("Escape");
 console.log("\u2713 word lookup explained");
 
-// 4. The assessment's word reaches the Words screen with one bar.
+// 4. Ending the conversation flushes the outstanding turns for scoring.
+await page.getByRole("button", { name: "End" }).click();
+await page.waitForTimeout(1500);
+if (seen.assess !== 1) {
+  problems.push(`expected one batched assessment on end, saw ${seen.assess}`);
+}
+console.log("\u2713 ending flushed", lastAssessBody.targets.length, "turn(s) in one call");
+
+// 5. The assessment's word reaches the Words screen with one bar.
 await page.getByRole("button", { name: "Words" }).click();
 await page.getByText("stare").waitFor({ timeout: 5000 });
 const bars = await page.getByText("Fragile").first().isVisible();
 console.log("✓ word stored, shown as Fragile:", bars);
 
-// 5. Choosing a theme starts that scene.
+// 6. Choosing a theme starts that scene.
 await page.getByRole("button", { name: "Themes" }).click();
 await page.getByRole("button", { name: /Un caffè/ }).click();
 await page.waitForTimeout(1200);
 console.log("✓ theme chosen, directive:", lastChatBody.messages.at(-1).content.slice(-70));
 
-// 6. Learning survives a reload.
+// 7. Learning survives a reload.
 await page.reload({ waitUntil: "networkidle" });
 await page.getByRole("button", { name: "Words" }).click();
 await page.getByText("stare").waitFor({ timeout: 5000 });

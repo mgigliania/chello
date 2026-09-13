@@ -102,17 +102,40 @@ function buildRequest(options: CallOptions): { url: string; init: RequestInit } 
   };
 }
 
-async function call(options: CallOptions): Promise<Response> {
+/** Longest pause worth taking before giving the learner an answer either way. */
+const MAX_RETRY_MS = 5000;
+
+async function call(options: CallOptions, retried = false): Promise<Response> {
   const { url, init } = buildRequest(options);
   const response = await fetch(url, init);
-  if (!response.ok) {
-    const detail = await response.text().catch(() => "");
-    throw new UpstreamError(
-      readableError(response.status, detail, options.provider),
-      response.status,
-    );
+  if (response.ok) return response;
+
+  // Free tiers meter by the minute, so a burst of quick turns can trip a limit
+  // that clears seconds later. One wait-and-retry turns most of those from a
+  // dead stop into a slightly slow reply; a second failure is a real limit.
+  if (response.status === 429 && !retried) {
+    const wait = retryDelay(response.headers.get("retry-after"));
+    if (wait !== null) {
+      await new Promise((resolve) => setTimeout(resolve, wait));
+      return call(options, true);
+    }
   }
-  return response;
+
+  const detail = await response.text().catch(() => "");
+  throw new UpstreamError(
+    readableError(response.status, detail, options.provider),
+    response.status,
+  );
+}
+
+/** How long to wait, or null when the provider says it is longer than a
+ *  learner should be left staring at the orb. */
+function retryDelay(header: string | null): number | null {
+  if (!header) return 2500;
+  const seconds = Number(header);
+  if (!Number.isFinite(seconds)) return 2500;
+  const ms = seconds * 1000;
+  return ms > MAX_RETRY_MS ? null : Math.max(500, ms);
 }
 
 /** Upstream errors reach a learner mid-conversation, so they are translated
