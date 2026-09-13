@@ -2,12 +2,12 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Chello — learn a language by talking",
+  title: "Pancho — learn a language by talking",
   description:
     "A calm voice tutor for Spanish, Portuguese, Italian and French. Speak, get gentle corrections, and practise the words you actually used.",
-  applicationName: "Chello",
+  applicationName: "Pancho",
   manifest: "/manifest.webmanifest",
-  appleWebApp: { capable: true, title: "Chello", statusBarStyle: "default" },
+  appleWebApp: { capable: true, title: "Pancho", statusBarStyle: "default" },
   icons: {
     icon: [{ url: "/favicon-32.png", sizes: "32x32", type: "image/png" }],
     apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],

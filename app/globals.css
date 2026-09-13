@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-/* Chello's palette. Warm linen ground with a single iris accent — the same
+/* Pancho's palette. Warm linen ground with a single iris accent — the same
    calm, rounded language as the reference, tuned violet instead of orange. */
 @theme {
   --color-ground: #faf8f5;

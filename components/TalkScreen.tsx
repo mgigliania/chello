@@ -344,7 +344,7 @@ export function TalkScreen({
             {transcript.map((passage) => (
               <div key={passage.id}>
                 <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-faint">
-                  {passage.speaker === "user" ? t.you : "Chello"}
+                  {passage.speaker === "user" ? t.you : "Pancho"}
                 </p>
                 <p
                   className="mt-1 text-[16px] leading-snug"

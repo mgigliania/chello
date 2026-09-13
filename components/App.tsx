@@ -11,11 +11,11 @@ import { WordsScreen } from "@/components/WordsScreen";
 import { useConversation } from "@/lib/conversation";
 import { strings } from "@/lib/i18n";
 import { recognitionSupported } from "@/lib/speech";
-import { useChello } from "@/lib/store";
+import { usePancho } from "@/lib/store";
 import { themeFor } from "@/lib/themes";
 
 export function App() {
-  const store = useChello();
+  const store = usePancho();
   const t = strings(store.preferences.interfaceLanguage);
   const [tab, setTab] = useState<Tab>("talk");
   const [settingsOpen, setSettingsOpen] = useState(false);

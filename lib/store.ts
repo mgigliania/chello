@@ -15,7 +15,7 @@ import type { Archive, Preferences, SessionRecord } from "@/lib/types";
 
 /** Everything that outlives a single conversation: the archive, the learner's
  *  preferences and the API key. Persisted to this browser only. */
-export function useChello() {
+export function usePancho() {
   const { archive, apiKey, hydrated } = useSyncExternalStore(
     subscribe,
     getSnapshot,
@@ -98,4 +98,4 @@ export function useChello() {
   };
 }
 
-export type ChelloStore = ReturnType<typeof useChello>;
+export type PanchoStore = ReturnType<typeof usePancho>;

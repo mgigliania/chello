@@ -10,7 +10,7 @@
  */
 import { chromium, devices } from "playwright";
 
-const BASE = process.env.CHELLO_URL ?? "http://127.0.0.1:3000";
+const BASE = process.env.PANCHO_URL ?? "http://127.0.0.1:3000";
 const browser = await chromium.launch({
   executablePath: process.env.CHROMIUM_PATH || undefined,
 });
@@ -74,12 +74,12 @@ await context.route("**/api/assess", async (route) => {
 
 // Skip onboarding and pre-seed a key, so the run exercises the loop itself.
 await context.addInitScript(() => {
-  localStorage.setItem("chello.apiKey.v1", "sk-ant-test");
+  localStorage.setItem("pancho.apiKey.v1", "sk-ant-test");
   // Seed once only: this script re-runs on every navigation, and overwriting
   // here would wipe the archive the reload check is meant to verify.
-  if (!localStorage.getItem("chello.archive.v1"))
+  if (!localStorage.getItem("pancho.archive.v1"))
   localStorage.setItem(
-    "chello.archive.v1",
+    "pancho.archive.v1",
     JSON.stringify({
       schemaVersion: 1,
       sessions: [],

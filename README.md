@@ -1,8 +1,8 @@
-# Chello
+# Pancho
 
 **Learn a language by talking to someone.**
 
-Chello is a voice tutor you can open on your phone. You pick a language, tap
+Pancho is a voice tutor you can open on your phone. You pick a language, tap
 the microphone, and have a real conversation with a patient partner who speaks
 only that language, corrects you gently, and quietly keeps track of the words
 you managed on your own.
@@ -14,7 +14,16 @@ It is a web app, so there is no App Store, no Xcode and no Mac. It runs on a
 free Vercel account, and speech in and out uses the phone's own voice engines —
 so the only thing that ever costs money is the text the model writes.
 
-→ **[How to put it online, step by step](docs/deploy.md)**
+## Put it online
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/import?s=https%3A%2F%2Fgithub.com%2Fmgigliania%2Fchello)
+
+Click the button, sign in with GitHub, and press **Deploy**. It costs nothing:
+Vercel's free plan covers it, and each person who uses the app enters their own
+Anthropic key, so their conversations are billed to them rather than to you.
+
+→ **[The same thing, click by click](docs/deploy.md)** — including how to add it
+to an iPhone home screen, and how to pay for your friends instead.
 
 ---
 
@@ -66,7 +75,7 @@ certificate, and the app never claims it is.
 ## Privacy and cost
 
 Conversations, words and settings are stored **in your browser** and nowhere
-else. There is no Chello account and no Chello server holding your data.
+else. There is no Pancho account and no Pancho server holding your data.
 
 Your Anthropic API key is kept in that browser's local storage, excluded from
 learning backups, and passed straight through this app's own API route to
@@ -125,4 +134,4 @@ Adding a language is one file — see [docs/add-a-language.md](docs/add-a-langua
 
 The concept, the shape of the teaching policy and the evidence model are taken
 from [Chuloo/mural](https://github.com/Chuloo/mural), a native iPhone app for
-the same idea. Chello is an independent reimplementation for the web.
+the same idea. Pancho is an independent reimplementation for the web.

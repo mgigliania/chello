@@ -39,7 +39,7 @@ export class UpstreamError extends Error {
  * rather pay for their friends. The key is never logged or persisted.
  */
 export function resolveKey(request: Request): string {
-  const supplied = request.headers.get("x-chello-key")?.trim();
+  const supplied = request.headers.get("x-pancho-key")?.trim();
   if (supplied) return supplied;
   const server = process.env.ANTHROPIC_API_KEY?.trim();
   if (server) return server;

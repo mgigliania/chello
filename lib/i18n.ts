@@ -24,7 +24,7 @@ const en = {
   everydayIn: (language: string) => `A little everyday ${language}`,
   readyWhenYouAre: "Ready when you are",
   listening: "Listening",
-  isSpeaking: "Chello is speaking",
+  isSpeaking: "Pancho is speaking",
   thinking: "Thinking",
   micOn: "Microphone on",
   micOff: "Microphone off",
@@ -76,7 +76,7 @@ const en = {
   deleteEverything: "Delete all learning data",
   deleteConfirm: "Delete every conversation and word? This cannot be undone.",
   privacyNote:
-    "Conversations, words and settings stay in this browser. Nothing is sent to a Chello server.",
+    "Conversations, words and settings stay in this browser. Nothing is sent to a Pancho server.",
 
   welcome: "Hello.",
   welcomeBody: "Learn a language by talking with someone. Choose where to start.",
@@ -85,7 +85,7 @@ const en = {
   continueButton: "Continue",
   beginButton: "Start talking",
 
-  micBlocked: "Chello needs microphone access to hear you.",
+  micBlocked: "Pancho needs microphone access to hear you.",
   micUnsupported:
     "This browser can't listen yet. Safari on iPhone and Chrome work best — you can still type.",
   speechUnsupported: "This browser has no voice for that language yet.",
@@ -108,7 +108,7 @@ const es: Dictionary = {
   everydayIn: (language: string) => `Un poco de ${language} cada día`,
   readyWhenYouAre: "Cuando quieras",
   listening: "Escuchando",
-  isSpeaking: "Chello está hablando",
+  isSpeaking: "Pancho está hablando",
   thinking: "Pensando",
   micOn: "Micrófono encendido",
   micOff: "Micrófono apagado",
@@ -162,7 +162,7 @@ const es: Dictionary = {
   deleteConfirm:
     "¿Borrar todas las conversaciones y palabras? Esto no se puede deshacer.",
   privacyNote:
-    "Las conversaciones, las palabras y los ajustes se quedan en este navegador. No se envía nada a un servidor de Chello.",
+    "Las conversaciones, las palabras y los ajustes se quedan en este navegador. No se envía nada a un servidor de Pancho.",
 
   welcome: "Hola.",
   welcomeBody: "Aprende un idioma hablando con alguien. Elige por dónde empezar.",
@@ -171,7 +171,7 @@ const es: Dictionary = {
   continueButton: "Continuar",
   beginButton: "Empezar a hablar",
 
-  micBlocked: "Chello necesita acceso al micrófono para escucharte.",
+  micBlocked: "Pancho necesita acceso al micrófono para escucharte.",
   micUnsupported:
     "Este navegador aún no puede escuchar. Safari en iPhone y Chrome funcionan mejor; también puedes escribir.",
   speechUnsupported: "Este navegador aún no tiene voz para ese idioma.",
@@ -192,7 +192,7 @@ const pt: Dictionary = {
   everydayIn: (language: string) => `Um pouco de ${language} todo dia`,
   readyWhenYouAre: "Quando você quiser",
   listening: "Ouvindo",
-  isSpeaking: "Chello está falando",
+  isSpeaking: "Pancho está falando",
   thinking: "Pensando",
   micOn: "Microfone ligado",
   micOff: "Microfone desligado",
@@ -246,7 +246,7 @@ const pt: Dictionary = {
   deleteConfirm:
     "Apagar todas as conversas e palavras? Isso não pode ser desfeito.",
   privacyNote:
-    "Conversas, palavras e ajustes ficam neste navegador. Nada é enviado para um servidor do Chello.",
+    "Conversas, palavras e ajustes ficam neste navegador. Nada é enviado para um servidor do Pancho.",
 
   welcome: "Olá.",
   welcomeBody: "Aprenda um idioma conversando com alguém. Escolha por onde começar.",
@@ -255,7 +255,7 @@ const pt: Dictionary = {
   continueButton: "Continuar",
   beginButton: "Começar a falar",
 
-  micBlocked: "O Chello precisa do microfone para ouvir você.",
+  micBlocked: "O Pancho precisa do microfone para ouvir você.",
   micUnsupported:
     "Este navegador ainda não consegue ouvir. Safari no iPhone e Chrome funcionam melhor; você também pode escrever.",
   speechUnsupported: "Este navegador ainda não tem voz para esse idioma.",
@@ -276,7 +276,7 @@ const it: Dictionary = {
   everydayIn: (language: string) => `Un po' di ${language} ogni giorno`,
   readyWhenYouAre: "Quando vuoi",
   listening: "Sto ascoltando",
-  isSpeaking: "Chello sta parlando",
+  isSpeaking: "Pancho sta parlando",
   thinking: "Sto pensando",
   micOn: "Microfono acceso",
   micOff: "Microfono spento",
@@ -330,7 +330,7 @@ const it: Dictionary = {
   deleteConfirm:
     "Eliminare tutte le conversazioni e le parole? Non si può annullare.",
   privacyNote:
-    "Conversazioni, parole e impostazioni restano in questo browser. Nulla viene inviato a un server di Chello.",
+    "Conversazioni, parole e impostazioni restano in questo browser. Nulla viene inviato a un server di Pancho.",
 
   welcome: "Ciao.",
   welcomeBody: "Impara una lingua parlando con qualcuno. Scegli da dove partire.",
@@ -339,7 +339,7 @@ const it: Dictionary = {
   continueButton: "Continua",
   beginButton: "Inizia a parlare",
 
-  micBlocked: "Chello ha bisogno del microfono per ascoltarti.",
+  micBlocked: "Pancho ha bisogno del microfono per ascoltarti.",
   micUnsupported:
     "Questo browser non può ancora ascoltare. Safari su iPhone e Chrome funzionano meglio; puoi comunque scrivere.",
   speechUnsupported: "Questo browser non ha ancora una voce per quella lingua.",
@@ -360,7 +360,7 @@ const fr: Dictionary = {
   everydayIn: (language: string) => `Un peu de ${language} chaque jour`,
   readyWhenYouAre: "Quand tu veux",
   listening: "J'écoute",
-  isSpeaking: "Chello parle",
+  isSpeaking: "Pancho parle",
   thinking: "Je réfléchis",
   micOn: "Micro activé",
   micOff: "Micro coupé",
@@ -414,7 +414,7 @@ const fr: Dictionary = {
   deleteConfirm:
     "Supprimer toutes les conversations et tous les mots ? C'est irréversible.",
   privacyNote:
-    "Les conversations, les mots et les réglages restent dans ce navigateur. Rien n'est envoyé à un serveur Chello.",
+    "Les conversations, les mots et les réglages restent dans ce navigateur. Rien n'est envoyé à un serveur Pancho.",
 
   welcome: "Bonjour.",
   welcomeBody: "Apprends une langue en parlant avec quelqu'un. Choisis par où commencer.",
@@ -423,7 +423,7 @@ const fr: Dictionary = {
   continueButton: "Continuer",
   beginButton: "Commencer à parler",
 
-  micBlocked: "Chello a besoin du micro pour t'entendre.",
+  micBlocked: "Pancho a besoin du micro pour t'entendre.",
   micUnsupported:
     "Ce navigateur ne peut pas encore écouter. Safari sur iPhone et Chrome fonctionnent le mieux ; tu peux aussi écrire.",
   speechUnsupported: "Ce navigateur n'a pas encore de voix pour cette langue.",

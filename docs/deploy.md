@@ -1,9 +1,9 @@
-# Putting Chello online, for free
+# Putting Pancho online, for free
 
 This takes about ten minutes and costs nothing. You do not need to install
 anything or use a terminal.
 
-At the end you will have a link like `https://chello.vercel.app` that you can
+At the end you will have a link like `https://pancho.vercel.app` that you can
 send to anyone. On an iPhone they can add it to the home screen and it behaves
 like a normal app.
 
@@ -32,8 +32,14 @@ If you would rather cover it for a few close friends, see
 
 ## Step 2 — Import the repository
 
+The quickest way is the button in the [README](../README.md) — it opens Vercel
+with the repository already selected. Otherwise, by hand:
+
 1. On your Vercel dashboard, click **Add New… → Project**.
 2. Find **chello** in the list of your repositories and click **Import**.
+   - The repository is still called `chello`; only the app was renamed to
+     Pancho. Renaming the repository on GitHub is optional and can wait until
+     after the first deploy — Vercel follows the new name automatically.
    - If you do not see it, click **Adjust GitHub App Permissions** and give
      Vercel access to the repository.
 3. Leave every setting alone. Vercel recognises Next.js and fills in the build
@@ -45,14 +51,14 @@ image and a link.
 
 ## Step 3 — Open it and add your key
 
-1. Click the link. You should see the Chello welcome screen.
+1. Click the link. You should see the Pancho welcome screen.
 2. Go through the two setup screens — pick a language, pick a subtitle language.
 3. On the last screen, paste an Anthropic API key.
 
 To get a key: go to [console.anthropic.com](https://console.anthropic.com),
 sign in, open **API keys**, and click **Create key**. You will need to add a
 small amount of credit to the account — five dollars goes a very long way,
-because Chello only pays for text, never for audio.
+because Pancho only pays for text, never for audio.
 
 4. Tap **Start talking**, allow the microphone, and say hello.
 
@@ -60,7 +66,7 @@ because Chello only pays for text, never for audio.
 
 On an iPhone, in Safari:
 
-1. Open your Chello link.
+1. Open your Pancho link.
 2. Tap the **Share** button (the square with the arrow).
 3. Scroll down and tap **Add to Home Screen**.
 
@@ -78,11 +84,14 @@ phone — you cannot see them and neither can anyone else.
 
 ## Changing the name
 
-The app is called Chello in three places:
+The name appears in four places:
 
-- `app/layout.tsx` — the browser tab and the home-screen name
 - `components/Brand.tsx` — the wordmark in the top left
+- `app/layout.tsx` — the browser tab and the home-screen name
 - `public/manifest.webmanifest` — the installed app's name
+- `lib/i18n.ts` — the lines the app says about itself, in all five languages
+
+The tutor also introduces itself by name to the model in `lib/teaching.ts`.
 
 Edit those, commit, and Vercel redeploys automatically within a minute. To
 change the web address, open your project on Vercel, go to **Settings →
@@ -118,7 +127,7 @@ it begins with `sk-ant-`.
 The key is wrong, was revoked, or has no credit. Make a fresh one in the
 Anthropic console and check the account's balance.
 
-**"Chello needs microphone access to hear you."**
+**"Pancho needs microphone access to hear you."**
 Safari asks once. If you said no, go to **Settings → Safari → Microphone** on
 the phone, or tap the "aA" button in the address bar and choose **Website
 Settings**.

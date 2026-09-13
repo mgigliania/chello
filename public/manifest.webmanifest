@@ -1,6 +1,6 @@
 {
-  "name": "Chello",
-  "short_name": "Chello",
+  "name": "Pancho",
+  "short_name": "Pancho",
   "description": "Learn a language by talking with someone.",
   "start_url": "/",
   "display": "standalone",

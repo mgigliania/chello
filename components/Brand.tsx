@@ -1,6 +1,6 @@
 export function Brand() {
   return (
-    <div className="flex items-center gap-2" aria-label="Chello">
+    <div className="flex items-center gap-2" aria-label="Pancho">
       <span
         className="size-[17px] rounded-full"
         style={{
@@ -9,7 +9,7 @@ export function Brand() {
         }}
       />
       <span className="text-[30px] font-bold tracking-[-0.055em] leading-none text-ink">
-        chello
+        pancho
       </span>
     </div>
   );

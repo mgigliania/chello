@@ -3,8 +3,8 @@
 import { DEFAULT_LANGUAGE_ID } from "@/lib/languages";
 import type { Archive, Preferences, SessionRecord } from "@/lib/types";
 
-const ARCHIVE_KEY = "chello.archive.v1";
-const KEY_STORAGE = "chello.apiKey.v1";
+const ARCHIVE_KEY = "pancho.archive.v1";
+const KEY_STORAGE = "pancho.apiKey.v1";
 export const SCHEMA_VERSION = 1;
 
 export const defaultPreferences: Preferences = {
@@ -60,7 +60,7 @@ export function exportArchive(archive: Archive): string {
 export function importArchive(text: string): Archive {
   const parsed = JSON.parse(text) as Partial<Archive>;
   if (!parsed || typeof parsed !== "object" || !Array.isArray(parsed.sessions)) {
-    throw new Error("That file is not a Chello backup.");
+    throw new Error("That file is not a Pancho backup.");
   }
   const sessions = parsed.sessions.filter(
     (session): session is SessionRecord =>

@@ -142,7 +142,7 @@ export function useConversation({
   const headers = useCallback(
     (): HeadersInit => ({
       "content-type": "application/json",
-      ...(apiKeyRef.current ? { "x-chello-key": apiKeyRef.current } : {}),
+      ...(apiKeyRef.current ? { "x-pancho-key": apiKeyRef.current } : {}),
     }),
     [],
   );
