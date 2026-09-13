@@ -82,8 +82,14 @@ export function App() {
             store.setPreferences({ meaningLanguage: language })
           }
           keys={store.keys}
+          models={store.preferences.models}
           onSetProvider={(id) => store.setPreferences({ provider: id })}
           onSetKey={store.setKey}
+          onSetModel={(provider, model) =>
+            store.setPreferences({
+              models: { ...store.preferences.models, [provider]: model },
+            })
+          }
           onDone={() => store.setPreferences({ hasOnboarded: true })}
         />
       </>

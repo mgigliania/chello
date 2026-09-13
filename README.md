@@ -98,7 +98,8 @@ setting rather than a rewrite. Three are built in:
 | --- | --- | --- |
 | **Google Gemini** | Free | No card required, no expiry, and the most headroom. The default. |
 | **Groq** | Free | Noticeably the fastest, but meters tokens by the minute — fine for conversation, tighter than Gemini. |
-| **Claude** | Paid | The best teacher of the three. |
+| **OpenRouter** | Free | One key, many free models. Its roster rotates, so Pancho asks what is free today and offers you the list. |
+| **Claude** | Paid | The best teacher of the four. |
 
 Groq is the better *feeling* of the two free options — replies land almost
 instantly, which matters when you are trying to hold a conversation — but its
@@ -108,7 +109,13 @@ as an error.
 
 Model IDs get retired — Groq withdrew its Llama models in August 2026 — so
 Settings has a model-name box. If a provider renames a model, type the new
-name; no code change, no redeploy.
+name; no code change, no redeploy. OpenRouter goes further and publishes a
+catalogue, so for that one Pancho lists whatever is free at the moment you
+look, and you tap it.
+
+Llama itself is still Meta's, still open, and still free to download — it is
+free *hosting* for it that has thinned out. OpenRouter is where it turns up
+when someone is giving it away.
 
 Speech recognition and synthesis use the browser's own engines, so audio never
 reaches a paid API at all. Only the text costs anything, and on the free tiers
@@ -169,7 +176,7 @@ lib/
   languages/  One module per language: voice, writing and lemma guidance
   teaching.ts The tutor's standing instructions and the assessment rubric
   learning.ts Evidence validation and the recall model — the rules above
-  providers.ts The three services, their models, and which are free
+  providers.ts The four services, their models, and which are free
   model.ts    One call, two request shapes (OpenAI-compatible and Anthropic)
   speech.ts   Web Speech in and out, with the restarts mobile needs
   store.ts    The archive, as an external store

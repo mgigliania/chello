@@ -293,11 +293,17 @@ export function setup(
   body: { provider?: string; model?: string; quality?: string },
 ): CallSetup {
   const provider = providerFor(String(body.provider ?? ""));
-  return {
-    provider,
-    key: resolveKey(request, provider),
-    model: modelFor(provider, String(body.quality ?? ""), body.model),
-  };
+  const model = modelFor(provider, String(body.quality ?? ""), body.model);
+  // Providers whose free roster rotates ship no default, so the choice is the
+  // learner's and an empty one is a setup step rather than a silent failure.
+  if (!model) {
+    // Phrased to sidestep a/an: provider names vary.
+    throw new UpstreamError(
+      `Choose a model for ${provider.label} in Settings.`,
+      400,
+    );
+  }
+  return { provider, key: resolveKey(request, provider), model };
 }
 
 export function failure(error: unknown): { message: string; status: number } {

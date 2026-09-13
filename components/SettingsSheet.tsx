@@ -5,7 +5,6 @@ import { CloseIcon } from "@/components/Icons";
 import { ProviderPicker } from "@/components/ProviderPicker";
 import { UI_LANGUAGES, type Strings } from "@/lib/i18n";
 import { LANGUAGES, MEANING_LANGUAGES } from "@/lib/languages";
-import { providerFor } from "@/lib/providers";
 import { exportArchive, importArchive } from "@/lib/storage";
 import type { Archive, Preferences } from "@/lib/types";
 
@@ -212,8 +211,12 @@ export function SettingsSheet({
             t={t}
             provider={preferences.provider}
             keys={keys}
+            models={preferences.models}
             onSetProvider={(id) => onChange({ provider: id })}
             onSetKey={onSetKey}
+            onSetModel={(provider, model) =>
+              onChange({ models: { ...preferences.models, [provider]: model } })
+            }
           />
 
           <div className="mt-5">
@@ -235,28 +238,6 @@ export function SettingsSheet({
             />
           </div>
 
-          <label className="mt-5 block">
-            <span className="text-[15px] font-semibold">{t.modelName}</span>
-            <input
-              type="text"
-              autoComplete="off"
-              spellCheck={false}
-              value={preferences.models[preferences.provider] ?? ""}
-              onChange={(event) =>
-                onChange({
-                  models: {
-                    ...preferences.models,
-                    [preferences.provider]: event.target.value.trim(),
-                  },
-                })
-              }
-              placeholder={providerFor(preferences.provider).defaultModel}
-              className="mt-2 w-full rounded-[18px] bg-raised px-4 py-3.5 text-[16px] shadow-[0_2px_10px_rgba(36,31,41,0.05)] outline-none placeholder:text-faint"
-            />
-            <span className="mt-2 block text-[14px] leading-snug text-faint">
-              {t.modelHint}
-            </span>
-          </label>
         </Section>
 
         <Section title={t.yourData}>

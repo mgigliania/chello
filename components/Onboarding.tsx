@@ -13,10 +13,12 @@ interface Props {
   meaningLanguage: string;
   provider: string;
   keys: Record<string, string>;
+  models: Record<string, string>;
   onSetLearning(id: string): void;
   onSetMeaning(language: string): void;
   onSetProvider(id: string): void;
   onSetKey(provider: string, key: string): void;
+  onSetModel(provider: string, model: string): void;
   onDone(): void;
 }
 
@@ -28,10 +30,12 @@ export function Onboarding({
   meaningLanguage,
   provider,
   keys,
+  models,
   onSetLearning,
   onSetMeaning,
   onSetProvider,
   onSetKey,
+  onSetModel,
   onDone,
 }: Props) {
   const [step, setStep] = useState(0);
@@ -150,8 +154,10 @@ export function Onboarding({
               t={t}
               provider={provider}
               keys={keys}
+              models={models}
               onSetProvider={onSetProvider}
               onSetKey={onSetKey}
+              onSetModel={onSetModel}
             />
           </div>
         </div>

@@ -7,7 +7,7 @@
  * answer is to switch provider, not to ship new code.
  */
 
-export type ProviderID = "google" | "groq" | "anthropic";
+export type ProviderID = "google" | "groq" | "openrouter" | "anthropic";
 
 export interface Provider {
   id: ProviderID;
@@ -27,6 +27,9 @@ export interface Provider {
   keyHint: string;
   /** Server-side key, for an operator who would rather pay for everyone. */
   envVar: string;
+  /** A public catalogue of this provider's models, where one exists. Used to
+   *  offer whatever is free today rather than a guess baked in at build time. */
+  catalogueURL?: string;
 }
 
 export const PROVIDERS: Provider[] = [
@@ -55,6 +58,22 @@ export const PROVIDERS: Provider[] = [
     keyURL: "https://console.groq.com/keys",
     keyHint: "gsk_…",
     envVar: "GROQ_API_KEY",
+  },
+  {
+    id: "openrouter",
+    label: "OpenRouter",
+    blurb: "One key, many free models — including Llama when it is free.",
+    cost: "free",
+    transport: "openai",
+    baseURL: "https://openrouter.ai/api/v1",
+    // Deliberately blank: which models are free rotates, so the app asks
+    // OpenRouter what is free today instead of shipping a stale guess.
+    defaultModel: "",
+    deepModel: "",
+    keyURL: "https://openrouter.ai/keys",
+    keyHint: "sk-or-v1-…",
+    envVar: "OPENROUTER_API_KEY",
+    catalogueURL: "https://openrouter.ai/api/v1/models",
   },
   {
     id: "anthropic",
