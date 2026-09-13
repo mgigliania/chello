@@ -8,7 +8,21 @@ import { PROVIDERS, providerFor } from "@/lib/providers";
 interface Listing {
   id: string;
   name: string;
-  context: number;
+  free: boolean;
+}
+
+/**
+ * The best model to start someone on, from what their key can actually call.
+ *
+ * A conversation wants speed over depth, and "flash"/"mini"/"instant" is how
+ * every provider names its quick tier. Free wins over paid; beyond that the
+ * provider's own ordering is as good a guide as any.
+ */
+function preferred(models: Listing[]): string | null {
+  const quick = /flash|mini|instant|small|haiku|scout/i;
+  const free = models.filter((model) => model.free);
+  const pool = free.length > 0 ? free : models;
+  return (pool.find((model) => quick.test(model.id)) ?? pool[0])?.id ?? null;
 }
 
 interface Props {
@@ -43,29 +57,45 @@ export function ProviderPicker({
   const keyLooksWrong = key.length > 0 && !current.keyPattern.test(key);
   const model = models[current.id] ?? "";
 
-  // Cached per provider, so switching back and forth does not refetch, and so
-  // "still loading" is derived from the absence of an entry rather than from a
-  // second state written during the effect.
+  // Cached by provider *and* key, because the answer depends on both: the same
+  // catalogue with a different account can allow different models. Caching
+  // also means "still loading" is the absence of an entry rather than a second
+  // piece of state written during the effect.
   const [catalogues, setCatalogues] = useState<Record<string, Listing[]>>({});
-  const listing = catalogues[current.id];
-  const loading = Boolean(current.catalogueURL) && listing === undefined;
+  const askable = Boolean(key) || Boolean(current.catalogueURL);
+  const cacheKey = `${current.id}:${key}`;
+  const listing = catalogues[cacheKey];
+  const loading = askable && listing === undefined;
 
   useEffect(() => {
-    if (!current.catalogueURL || catalogues[current.id] !== undefined) return;
-    const id = current.id;
+    if (!askable || catalogues[cacheKey] !== undefined) return;
     let live = true;
-    fetch(`/api/models?provider=${encodeURIComponent(id)}`)
-      .then((response) => (response.ok ? response.json() : { models: [] }))
-      .then((body: { models?: Listing[] }) => {
-        if (live) setCatalogues((prior) => ({ ...prior, [id]: body.models ?? [] }));
+    // Debounced, so pasting a key character by character asks once.
+    const timer = setTimeout(() => {
+      fetch(`/api/models?provider=${encodeURIComponent(current.id)}`, {
+        headers: key ? { "x-pancho-key": key } : {},
       })
-      .catch(() => {
-        if (live) setCatalogues((prior) => ({ ...prior, [id]: [] }));
-      });
+        .then((response) => (response.ok ? response.json() : { models: [] }))
+        .then((body: { models?: Listing[] }) => {
+          if (!live) return;
+          const found = body.models ?? [];
+          setCatalogues((prior) => ({ ...prior, [cacheKey]: found }));
+          // Nothing chosen yet: start them on something the key can call,
+          // rather than on a name hard-coded months ago.
+          if (!models[current.id] && found.length > 0) {
+            const pick = preferred(found);
+            if (pick) onSetModel(current.id, pick);
+          }
+        })
+        .catch(() => {
+          if (live) setCatalogues((prior) => ({ ...prior, [cacheKey]: [] }));
+        });
+    }, 600);
     return () => {
       live = false;
+      clearTimeout(timer);
     };
-  }, [current.id, current.catalogueURL, catalogues]);
+  }, [askable, cacheKey, catalogues, current.id, key, models, onSetModel]);
 
   return (
     <div>
@@ -162,10 +192,10 @@ export function ProviderPicker({
         </span>
       </label>
 
-      {current.catalogueURL && (
+      {askable && (
         <div className="mt-4">
           <p className="text-[13px] font-bold uppercase tracking-[0.12em] text-muted">
-            {t.freeNow}
+            {t.availableModels}
           </p>
           {loading && (
             <p className="mt-2 text-[15px] text-faint">{t.loadingModels}</p>
@@ -187,8 +217,13 @@ export function ProviderPicker({
                     entry.id === model ? "bg-iris-soft" : "bg-raised"
                   }`}
                 >
-                  <span className="block text-[15px] font-semibold">
-                    {entry.name}
+                  <span className="flex items-center gap-2">
+                    <span className="text-[15px] font-semibold">{entry.name}</span>
+                    {entry.free && (
+                      <span className="rounded-full bg-mint px-2 py-0.5 text-[11px] font-bold uppercase tracking-wide text-ink">
+                        {t.freeLabel}
+                      </span>
+                    )}
                   </span>
                   <span className="mt-0.5 block truncate font-mono text-[12px] text-faint">
                     {entry.id}

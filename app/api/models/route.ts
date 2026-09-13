@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { providerFor } from "@/lib/providers";
+import { providerFor, type Provider } from "@/lib/providers";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -7,53 +7,82 @@ export const dynamic = "force-dynamic";
 interface Listing {
   id: string;
   name: string;
-  context: number;
+  free: boolean;
 }
 
-interface CatalogueEntry {
+interface Entry {
   id?: string;
   name?: string;
-  context_length?: number;
+  display_name?: string;
   pricing?: { prompt?: string; completion?: string };
 }
 
-const isFree = (entry: CatalogueEntry): boolean => {
+/** Models that cannot hold a conversation, by the naming every provider uses. */
+const NOT_CONVERSATIONAL =
+  /embed|embedding|aqa|imagen|veo|tts|whisper|rerank|moderation|guard|vision-only/i;
+
+const isFree = (entry: Entry): boolean => {
   if (entry.id?.endsWith(":free")) return true;
-  const prompt = Number(entry.pricing?.prompt ?? "1");
-  const completion = Number(entry.pricing?.completion ?? "1");
-  return prompt === 0 && completion === 0;
+  if (!entry.pricing) return false;
+  return Number(entry.pricing.prompt) === 0 && Number(entry.pricing.completion) === 0;
 };
 
+function request(provider: Provider, key: string): { url: string; headers: HeadersInit } {
+  if (provider.transport === "anthropic") {
+    return {
+      url: `${provider.baseURL}/models`,
+      headers: { "x-api-key": key, "anthropic-version": "2023-06-01" },
+    };
+  }
+  return {
+    url: `${provider.baseURL}/models`,
+    headers: { authorization: `Bearer ${key}` },
+  };
+}
+
 /**
- * Which models a provider is giving away today.
+ * Which models this key can actually call.
  *
- * OpenRouter's free roster rotates, so a model name baked into the build goes
- * stale. Asking its public catalogue means the app offers what actually works
- * now, and keeps working when the list changes underneath it.
+ * Model IDs are the most perishable thing in this app — Groq retired its Llama
+ * models, Google's Flash line moves every few months — so nothing here is
+ * hard-coded. Asked with the learner's own key, the answer is not a guess: it
+ * is what that account may call, today.
  */
-export async function GET(request: Request) {
-  const id = new URL(request.url).searchParams.get("provider") ?? "";
-  const provider = providerFor(id);
-  if (!provider.catalogueURL) return NextResponse.json({ models: [] });
+export async function GET(request_: Request) {
+  const url = new URL(request_.url);
+  const provider = providerFor(url.searchParams.get("provider") ?? "");
+  const key = request_.headers.get("x-pancho-key")?.trim() ?? "";
+
+  // With no key, only a provider that publishes a public catalogue can answer.
+  const target = key
+    ? request(provider, key)
+    : provider.catalogueURL
+      ? { url: provider.catalogueURL, headers: {} as HeadersInit }
+      : null;
+  if (!target) return NextResponse.json({ models: [] });
 
   try {
-    const response = await fetch(provider.catalogueURL, {
-      headers: { accept: "application/json" },
-      // The roster changes rarely; an hour old is fine and spares the provider.
-      next: { revalidate: 3600 },
+    const response = await fetch(target.url, {
+      headers: { accept: "application/json", ...target.headers },
     });
     if (!response.ok) return NextResponse.json({ models: [] });
 
-    const body = (await response.json()) as { data?: CatalogueEntry[] };
-    const models: Listing[] = (body.data ?? [])
-      .filter((entry) => entry.id && isFree(entry))
-      .map((entry) => ({
-        id: entry.id as string,
-        name: (entry.name ?? entry.id) as string,
-        context: entry.context_length ?? 0,
-      }))
-      .sort((a, b) => b.context - a.context)
-      .slice(0, 40);
+    const body = (await response.json()) as { data?: Entry[]; models?: Entry[] };
+    const entries = body.data ?? body.models ?? [];
+
+    const models: Listing[] = entries
+      .map((entry) => {
+        // Google returns "models/gemini-…"; the chat call wants the bare name.
+        const id = (entry.id ?? "").replace(/^models\//, "");
+        return {
+          id,
+          name: entry.display_name ?? entry.name ?? id,
+          free: isFree(entry),
+        };
+      })
+      .filter((model) => model.id && !NOT_CONVERSATIONAL.test(model.id))
+      .sort((a, b) => Number(b.free) - Number(a.free) || a.id.localeCompare(b.id))
+      .slice(0, 60);
 
     return NextResponse.json({ models });
   } catch {

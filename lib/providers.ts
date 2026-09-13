@@ -30,8 +30,9 @@ export interface Provider {
   keyPattern: RegExp;
   /** Server-side key, for an operator who would rather pay for everyone. */
   envVar: string;
-  /** A public catalogue of this provider's models, where one exists. Used to
-   *  offer whatever is free today rather than a guess baked in at build time. */
+  /** A catalogue readable without a key, where one exists. Every provider can
+   *  also be asked with the learner's own key — which is the authoritative
+   *  answer, since it reflects what that account may actually call. */
   catalogueURL?: string;
 }
 
