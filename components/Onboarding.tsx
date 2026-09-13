@@ -83,7 +83,7 @@ export function Onboarding({
                   aria-pressed={selected}
                   className={`press flex items-center gap-3 rounded-[22px] px-5 py-4 text-left ${
                     selected
-                      ? "bg-iris text-white"
+                      ? "bg-iris-solid text-white"
                       : "bg-raised shadow-[0_2px_10px_rgba(36,31,41,0.05)]"
                   }`}
                 >
@@ -152,7 +152,7 @@ export function Onboarding({
       <button
         type="button"
         onClick={() => (step === 2 ? onDone() : setStep(step + 1))}
-        className="press w-full rounded-full bg-iris py-4 text-[17px] font-semibold text-white shadow-[0_8px_24px_rgba(110,79,224,0.3)]"
+        className="press w-full rounded-full bg-iris-solid py-4 text-[17px] font-semibold text-white shadow-[0_8px_24px_rgba(110,79,224,0.3)]"
       >
         {step === 2 ? t.beginButton : t.continueButton}
       </button>

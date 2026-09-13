@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { Onboarding } from "@/components/Onboarding";
 import { SettingsSheet } from "@/components/SettingsSheet";
 import { Shell } from "@/components/Shell";
+import { ThemeSync } from "@/components/ThemeSync";
 import { TabBar, type Tab } from "@/components/TabBar";
 import { TalkScreen } from "@/components/TalkScreen";
 import { ThemesScreen } from "@/components/ThemesScreen";
@@ -55,24 +56,36 @@ export function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [store.hydrated, store.preferences.learningLanguageID]);
 
+  const themeSync = <ThemeSync theme={store.preferences.theme} />;
+
   if (!store.hydrated) {
-    return <div className="min-h-dvh bg-ground" />;
+    return (
+      <>
+        {themeSync}
+        <div className="min-h-dvh bg-ground" />
+      </>
+    );
   }
 
   if (!store.preferences.hasOnboarded) {
     return (
-      <Onboarding
-        t={t}
-        learningLanguageID={store.preferences.learningLanguageID}
-        meaningLanguage={store.preferences.meaningLanguage}
-        apiKey={store.apiKey}
-        onSetLearning={(id) => store.setPreferences({ learningLanguageID: id })}
-        onSetMeaning={(language) =>
-          store.setPreferences({ meaningLanguage: language })
-        }
-        onSetApiKey={store.setApiKey}
-        onDone={() => store.setPreferences({ hasOnboarded: true })}
-      />
+      <>
+        {themeSync}
+        <Onboarding
+          t={t}
+          learningLanguageID={store.preferences.learningLanguageID}
+          meaningLanguage={store.preferences.meaningLanguage}
+          apiKey={store.apiKey}
+          onSetLearning={(id) =>
+            store.setPreferences({ learningLanguageID: id })
+          }
+          onSetMeaning={(language) =>
+            store.setPreferences({ meaningLanguage: language })
+          }
+          onSetApiKey={store.setApiKey}
+          onDone={() => store.setPreferences({ hasOnboarded: true })}
+        />
+      </>
     );
   }
 
@@ -95,6 +108,7 @@ export function App() {
 
   return (
     <>
+      {themeSync}
       <Shell onOpenSettings={() => setSettingsOpen(true)} settingsLabel={t.settings}>
         {banner && (
           <button

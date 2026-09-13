@@ -159,6 +159,18 @@ export function SettingsSheet({
           />
         </Section>
 
+        <Section title={t.appearance}>
+          <Choice
+            value={preferences.theme}
+            onChange={(theme) => onChange({ theme })}
+            options={[
+              { id: "system" as const, label: t.themeSystem },
+              { id: "light" as const, label: t.themeLight },
+              { id: "dark" as const, label: t.themeDark },
+            ]}
+          />
+        </Section>
+
         <Section title={t.speechRate}>
           <div className="rounded-[20px] bg-raised px-5 py-4 shadow-[0_2px_10px_rgba(36,31,41,0.05)]">
             <input

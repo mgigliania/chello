@@ -82,6 +82,8 @@ export interface Preferences {
   speechRate: number;
   /** "balanced" for a fast partner, "best" for the deeper model. */
   quality: "balanced" | "best";
+  /** "system" follows the device; the others override it in both directions. */
+  theme: "system" | "light" | "dark";
 }
 
 export interface Archive {

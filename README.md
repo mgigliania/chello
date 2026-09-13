@@ -7,8 +7,9 @@ the microphone, and have a real conversation with a patient partner who speaks
 only that language, corrects you gently, and quietly keeps track of the words
 you managed on your own.
 
-It teaches **Spanish**, **Portuguese**, **Italian**, **French** and **English**,
-with meaning subtitles in ten languages and an interface in five.
+It teaches **Spanish** (Spain), **Portuguese** (Brazil), **Italian**, **French**
+and **English**, with meaning subtitles in ten languages and an interface in
+five.
 
 It is a web app, so there is no App Store, no Xcode and no Mac. It runs on a
 free Vercel account, and speech in and out uses the phone's own voice engines —
@@ -59,6 +60,9 @@ your friends instead of asking them for a key.
 - **Tap any word.** Touch a word in the tutor's line to get it explained in
   context, in your reading language, without breaking the conversation.
 - **Type instead.** When speaking is awkward, write. The conversation carries on.
+- **Light and dark.** Follows the phone by default, with Light and Dark in
+  Settings when you want to override it. The choice is painted before the page
+  appears, so there is no white flash at night.
 
 ## How the teaching works
 

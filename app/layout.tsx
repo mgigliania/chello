@@ -16,7 +16,10 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#faf8f5",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#faf8f5" },
+    { media: "(prefers-color-scheme: dark)", color: "#14111a" },
+  ],
   width: "device-width",
   initialScale: 1,
   // The orb sits close to the edges; let the page paint under the notch.
@@ -31,7 +34,16 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        {/* Runs before anything paints: without it a learner who chose dark
+            would see one frame of the light page on every load. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var a=localStorage.getItem("pancho.archive.v1");if(!a)return;var t=(JSON.parse(a).preferences||{}).theme;if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;}catch(e){}})()`,
+          }}
+        />
+        {children}
+      </body>
     </html>
   );
 }

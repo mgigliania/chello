@@ -17,6 +17,7 @@ export const defaultPreferences: Preferences = {
   hasOnboarded: false,
   speechRate: 0.95,
   quality: "balanced",
+  theme: "system",
 };
 
 export const emptyArchive = (): Archive => ({

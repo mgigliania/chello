@@ -316,7 +316,7 @@ export function TalkScreen({
               onClick={submit}
               aria-label={t.send}
               disabled={!draft.trim()}
-              className="press grid size-12 shrink-0 place-items-center rounded-full bg-iris text-white disabled:opacity-40"
+              className="press grid size-12 shrink-0 place-items-center rounded-full bg-iris-solid text-white disabled:opacity-40"
             >
               <SendIcon size={20} />
             </button>

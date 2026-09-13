@@ -6,7 +6,7 @@ export const spanish: LanguageModule = {
   nativeName: "Español",
   variety: "Spain",
   locale: "es-ES",
-  voiceFallbacks: ["es-MX", "es-US", "es"],
+  voiceFallbacks: ["es", "es-MX", "es-US"],
   greeting: "¡Hola!",
   greetingWord: "hola",
   flag: "🇪🇸",
