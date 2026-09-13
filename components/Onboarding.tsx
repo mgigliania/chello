@@ -4,27 +4,34 @@ import { useEffect, useState } from "react";
 import { Brand } from "@/components/Brand";
 import { Orb } from "@/components/Orb";
 import type { Strings } from "@/lib/i18n";
+import { ProviderPicker } from "@/components/ProviderPicker";
 import { LANGUAGES, MEANING_LANGUAGES, meaningGreeting } from "@/lib/languages";
 
 interface Props {
   t: Strings;
   learningLanguageID: string;
   meaningLanguage: string;
-  apiKey: string;
+  provider: string;
+  keys: Record<string, string>;
   onSetLearning(id: string): void;
   onSetMeaning(language: string): void;
-  onSetApiKey(key: string): void;
+  onSetProvider(id: string): void;
+  onSetKey(provider: string, key: string): void;
   onDone(): void;
 }
+
+const LAST_STEP = 3;
 
 export function Onboarding({
   t,
   learningLanguageID,
   meaningLanguage,
-  apiKey,
+  provider,
+  keys,
   onSetLearning,
   onSetMeaning,
-  onSetApiKey,
+  onSetProvider,
+  onSetKey,
   onDone,
 }: Props) {
   const [step, setStep] = useState(0);
@@ -111,7 +118,7 @@ export function Onboarding({
           <h1 className="text-[30px] font-semibold leading-tight tracking-[-0.03em]">
             {t.whichSubtitles}
           </h1>
-          <div className="no-scrollbar mt-5 max-h-56 overflow-y-auto rounded-[22px] bg-raised p-1.5 shadow-[0_2px_10px_rgba(36,31,41,0.05)]">
+          <div className="no-scrollbar mt-5 max-h-72 overflow-y-auto rounded-[22px] bg-raised p-1.5 shadow-[0_2px_10px_rgba(36,31,41,0.05)]">
             {MEANING_LANGUAGES.map((language) => {
               const selected = language === meaningLanguage;
               return (
@@ -130,35 +137,36 @@ export function Onboarding({
               );
             })}
           </div>
+        </div>
+      )}
 
-          <label className="mt-6 block">
-            <span className="text-[15px] font-semibold">{t.apiKey}</span>
-            <input
-              type="password"
-              autoComplete="off"
-              spellCheck={false}
-              value={apiKey}
-              onChange={(event) => onSetApiKey(event.target.value.trim())}
-              placeholder="sk-ant-…"
-              className="mt-2 w-full rounded-[18px] bg-raised px-4 py-3.5 text-[16px] outline-none shadow-[0_2px_10px_rgba(36,31,41,0.05)] placeholder:text-faint"
+      {step === 3 && (
+        <div className="flex flex-1 flex-col justify-center py-8">
+          <h1 className="text-[30px] font-semibold leading-tight tracking-[-0.03em]">
+            {t.whichProvider}
+          </h1>
+          <div className="mt-5">
+            <ProviderPicker
+              t={t}
+              provider={provider}
+              keys={keys}
+              onSetProvider={onSetProvider}
+              onSetKey={onSetKey}
             />
-            <span className="mt-2 block text-[14px] leading-snug text-faint">
-              {t.apiKeyHelp}
-            </span>
-          </label>
+          </div>
         </div>
       )}
 
       <button
         type="button"
-        onClick={() => (step === 2 ? onDone() : setStep(step + 1))}
+        onClick={() => (step === LAST_STEP ? onDone() : setStep(step + 1))}
         className="press w-full rounded-full bg-iris-solid py-4 text-[17px] font-semibold text-white shadow-[0_8px_24px_rgba(110,79,224,0.3)]"
       >
-        {step === 2 ? t.beginButton : t.continueButton}
+        {step === LAST_STEP ? t.beginButton : t.continueButton}
       </button>
 
       <div className="mt-5 flex justify-center gap-1.5" aria-hidden="true">
-        {[0, 1, 2].map((index) => (
+        {[0, 1, 2, 3].map((index) => (
           <span
             key={index}
             className={`h-1.5 rounded-full transition-all ${

@@ -6,8 +6,8 @@ import {
   getSnapshot,
   subscribe,
   updateArchive,
-  writeApiKey,
   writeArchive,
+  writeKey,
 } from "@/lib/archiveStore";
 import { project } from "@/lib/learning";
 import { emptyArchive } from "@/lib/storage";
@@ -16,7 +16,7 @@ import type { Archive, Preferences, SessionRecord } from "@/lib/types";
 /** Everything that outlives a single conversation: the archive, the learner's
  *  preferences and the API key. Persisted to this browser only. */
 export function usePancho() {
-  const { archive, apiKey, hydrated } = useSyncExternalStore(
+  const { archive, keys, hydrated } = useSyncExternalStore(
     subscribe,
     getSnapshot,
     getServerSnapshot,
@@ -67,7 +67,10 @@ export function usePancho() {
     [],
   );
 
-  const setApiKey = useCallback((key: string) => writeApiKey(key), []);
+  const setKey = useCallback(
+    (provider: string, key: string) => writeKey(provider, key),
+    [],
+  );
 
   const learner = useMemo(
     () =>
@@ -83,14 +86,18 @@ export function usePancho() {
     ],
   );
 
+  /** The key for whichever provider is selected right now. */
+  const apiKey = keys[archive.preferences.provider] ?? "";
+
   return {
     archive,
     hydrated,
+    keys,
     apiKey,
     learner,
     preferences: archive.preferences,
     setPreferences,
-    setApiKey,
+    setKey,
     commitSession,
     forgetWord,
     deleteEverything,

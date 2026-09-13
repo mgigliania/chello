@@ -1,11 +1,5 @@
 import { NextResponse } from "next/server";
-import {
-  UpstreamError,
-  complete,
-  extractJSON,
-  modelFor,
-  resolveKey,
-} from "@/lib/anthropic";
+import { complete, extractJSON, failure, setup } from "@/lib/model";
 import type { Assessment, WordProposal } from "@/lib/types";
 
 export const runtime = "nodejs";
@@ -18,6 +12,8 @@ interface Body {
   passageID?: string;
   revisionKey?: string;
   context?: string;
+  provider?: string;
+  model?: string;
   quality?: string;
 }
 
@@ -82,15 +78,13 @@ function coerce(raw: unknown, body: Body): Assessment | null {
 
 export async function POST(request: Request) {
   try {
-    const key = resolveKey(request);
     const body = (await request.json()) as Body;
     if (!body.passageID || !body.transcript) {
       return NextResponse.json({ error: "Nothing to assess." }, { status: 400 });
     }
 
     const output = await complete({
-      key,
-      model: modelFor(body.quality),
+      ...setup(request, body),
       system: `${body.system ?? ""}\n\n${body.schema ?? ""}`,
       messages: [{ role: "user", content: body.transcript }],
       maxTokens: 900,
@@ -104,9 +98,7 @@ export async function POST(request: Request) {
     }
     return NextResponse.json(assessment);
   } catch (error) {
-    const status = error instanceof UpstreamError ? error.status : 500;
-    const message =
-      error instanceof Error ? error.message : "The request was rejected.";
+    const { message, status } = failure(error);
     return NextResponse.json({ error: message }, { status });
   }
 }

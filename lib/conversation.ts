@@ -37,9 +37,16 @@ interface Options {
   preferences: Preferences;
   learner: LearnerState;
   apiKey: string;
-  quality: string;
   onCommit(session: SessionRecord): void;
 }
+
+/** How much of the conversation to resend.
+ *
+ *  The model only needs recent context to stay coherent, and the transcript is
+ *  kept in full locally either way — so capping this stops every turn getting
+ *  more expensive than the last, which matters most on a free tier's
+ *  tokens-per-minute allowance. */
+const CONTEXT_TURNS = 10;
 
 const newID = () =>
   typeof crypto !== "undefined" && "randomUUID" in crypto
@@ -58,7 +65,7 @@ function buildMessages(
   directive?: string,
 ): ApiMessage[] {
   const messages: ApiMessage[] = [];
-  for (const passage of toPassages(session.fragments)) {
+  for (const passage of toPassages(session.fragments).slice(-CONTEXT_TURNS)) {
     const role = passage.speaker === "user" ? "user" : "assistant";
     const content = passageText(passage).trim();
     if (!content) continue;
@@ -92,7 +99,6 @@ export function useConversation({
   preferences,
   learner,
   apiKey,
-  quality,
   onCommit,
 }: Options) {
   const language = useMemo(
@@ -136,13 +142,24 @@ export function useConversation({
   learnerRef.current = learner;
   const apiKeyRef = useRef(apiKey);
   apiKeyRef.current = apiKey;
-  const qualityRef = useRef(quality);
-  qualityRef.current = quality;
+  const settingsRef = useRef(preferences);
+  settingsRef.current = preferences;
 
   const headers = useCallback(
     (): HeadersInit => ({
       "content-type": "application/json",
       ...(apiKeyRef.current ? { "x-pancho-key": apiKeyRef.current } : {}),
+    }),
+    [],
+  );
+
+  /** Which service, which model — sent with every request so a change in
+   *  Settings takes effect on the next turn without restarting anything. */
+  const routing = useCallback(
+    () => ({
+      provider: settingsRef.current.provider,
+      model: settingsRef.current.models[settingsRef.current.provider] ?? "",
+      quality: settingsRef.current.quality,
     }),
     [],
   );
@@ -210,8 +227,8 @@ export function useConversation({
           headers: headers(),
           signal: controller.signal,
           body: JSON.stringify({
+            ...routing(),
             system,
-            quality: qualityRef.current,
             messages: buildMessages(current, directive),
           }),
         });
@@ -288,19 +305,21 @@ export function useConversation({
         setStatus("idle");
       }
     },
-    [appendFragment, headers, language],
+    [appendFragment, headers, language, routing],
   );
 
   const translate = useCallback(
     async (text: string) => {
       if (!apiKeyRef.current) return;
+      // A hidden subtitle is a request nobody reads.
+      if (!settingsRef.current.meaningVisible) return;
       try {
         const response = await fetch("/api/translate", {
           method: "POST",
           headers: headers(),
           body: JSON.stringify({
+            ...routing(),
             text,
-            quality: qualityRef.current,
             system: translationPrompt(
               language,
               preferencesRef.current.meaningLanguage,
@@ -320,7 +339,7 @@ export function useConversation({
         // Subtitles are optional; silence is the right failure here.
       }
     },
-    [headers, language, update],
+    [headers, language, routing, update],
   );
 
   /** Score the most recent completed learner turn. */
@@ -342,13 +361,13 @@ export function useConversation({
         method: "POST",
         headers: headers(),
         body: JSON.stringify({
+          ...routing(),
           system: assessmentPrompt(language),
           schema: ASSESSMENT_SCHEMA,
           transcript: transcriptContext(current, target),
           passageID: target.id,
           revisionKey,
           context: current.themeID ?? "free",
-          quality: qualityRef.current,
         }),
       });
       if (!response.ok) return;
@@ -364,7 +383,7 @@ export function useConversation({
     } catch {
       // A missed assessment costs one turn of evidence, nothing more.
     }
-  }, [headers, language, update]);
+  }, [headers, language, routing, update]);
 
   const commitUserTurn = useCallback(
     (text: string, typed: boolean) => {
@@ -524,9 +543,9 @@ export function useConversation({
           method: "POST",
           headers: headers(),
           body: JSON.stringify({
+            ...routing(),
             phrase,
             sentence,
-            quality: qualityRef.current,
             system: lookupPrompt(
               language,
               preferencesRef.current.meaningLanguage,
@@ -539,7 +558,7 @@ export function useConversation({
         setLookup(null);
       }
     },
-    [headers, language],
+    [headers, language, routing],
   );
 
   const clearLookup = useCallback(() => setLookup(null), []);

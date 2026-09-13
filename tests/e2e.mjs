@@ -74,7 +74,7 @@ await context.route("**/api/assess", async (route) => {
 
 // Skip onboarding and pre-seed a key, so the run exercises the loop itself.
 await context.addInitScript(() => {
-  localStorage.setItem("pancho.apiKey.v1", "sk-ant-test");
+  localStorage.setItem("pancho.key.google", "test-key");
   // Seed once only: this script re-runs on every navigation, and overwriting
   // here would wipe the archive the reload check is meant to verify.
   if (!localStorage.getItem("pancho.archive.v1"))
@@ -125,6 +125,7 @@ await page.getByText("Ciao! Come stai oggi?").waitFor({ timeout: 5000 });
 await page.getByText("Hi! How are you today?").waitFor({ timeout: 5000 });
 console.log("✓ greeting streamed and subtitled");
 console.log("  system prompt mentions Italian:", /Speak ONLY Italian/.test(lastChatBody.system));
+console.log("  routed to provider:", lastChatBody.provider);
 console.log("  system prompt carries the theme:", lastChatBody.messages.at(-1).content.slice(0, 40));
 
 

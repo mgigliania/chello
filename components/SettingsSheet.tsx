@@ -2,8 +2,10 @@
 
 import { useRef, useState } from "react";
 import { CloseIcon } from "@/components/Icons";
+import { ProviderPicker } from "@/components/ProviderPicker";
 import { UI_LANGUAGES, type Strings } from "@/lib/i18n";
 import { LANGUAGES, MEANING_LANGUAGES } from "@/lib/languages";
+import { providerFor } from "@/lib/providers";
 import { exportArchive, importArchive } from "@/lib/storage";
 import type { Archive, Preferences } from "@/lib/types";
 
@@ -11,10 +13,10 @@ interface Props {
   t: Strings;
   archive: Archive;
   preferences: Preferences;
-  apiKey: string;
+  keys: Record<string, string>;
   onClose(): void;
   onChange(patch: Partial<Preferences>): void;
-  onSetApiKey(key: string): void;
+  onSetKey(provider: string, key: string): void;
   onReplaceArchive(archive: Archive): void;
   onDeleteEverything(): void;
 }
@@ -76,10 +78,10 @@ export function SettingsSheet({
   t,
   archive,
   preferences,
-  apiKey,
+  keys,
   onClose,
   onChange,
-  onSetApiKey,
+  onSetKey,
   onReplaceArchive,
   onDeleteEverything,
 }: Props) {
@@ -192,31 +194,12 @@ export function SettingsSheet({
           </div>
         </Section>
 
-        <Section title="Model">
-          <Choice
-            value={preferences.quality}
-            onChange={(quality) => onChange({ quality })}
-            options={[
-              {
-                id: "balanced" as const,
-                label: "Balanced",
-                hint: "Replies fast. Best for live conversation.",
-              },
-              {
-                id: "best" as const,
-                label: "Deepest",
-                hint: "Slower to answer, more nuanced teaching.",
-              },
-            ]}
-          />
-        </Section>
-
         <Section title={t.interests}>
           <textarea
             rows={3}
             value={preferences.interests}
             onChange={(event) => onChange({ interests: event.target.value })}
-            className="w-full resize-none rounded-[20px] bg-raised px-4 py-3.5 text-[16px] outline-none shadow-[0_2px_10px_rgba(36,31,41,0.05)] placeholder:text-faint"
+            className="w-full resize-none rounded-[20px] bg-raised px-4 py-3.5 text-[16px] shadow-[0_2px_10px_rgba(36,31,41,0.05)] outline-none placeholder:text-faint"
             placeholder={
               LANGUAGES.find((l) => l.id === preferences.learningLanguageID)
                 ?.interestsPlaceholder ?? ""
@@ -224,17 +207,56 @@ export function SettingsSheet({
           />
         </Section>
 
-        <Section title={t.apiKey}>
-          <input
-            type="password"
-            autoComplete="off"
-            spellCheck={false}
-            value={apiKey}
-            onChange={(event) => onSetApiKey(event.target.value.trim())}
-            placeholder="sk-ant-…"
-            className="w-full rounded-[20px] bg-raised px-4 py-3.5 text-[16px] outline-none shadow-[0_2px_10px_rgba(36,31,41,0.05)] placeholder:text-faint"
+        <Section title={t.whereItThinks}>
+          <ProviderPicker
+            t={t}
+            provider={preferences.provider}
+            keys={keys}
+            onSetProvider={(id) => onChange({ provider: id })}
+            onSetKey={onSetKey}
           />
-          <p className="mt-2 text-[14px] leading-snug text-faint">{t.apiKeyHelp}</p>
+
+          <div className="mt-5">
+            <Choice
+              value={preferences.quality}
+              onChange={(quality) => onChange({ quality })}
+              options={[
+                {
+                  id: "balanced" as const,
+                  label: "Balanced",
+                  hint: "Replies fast. Best for live conversation.",
+                },
+                {
+                  id: "best" as const,
+                  label: "Deepest",
+                  hint: "Slower to answer, more nuanced teaching.",
+                },
+              ]}
+            />
+          </div>
+
+          <label className="mt-5 block">
+            <span className="text-[15px] font-semibold">{t.modelName}</span>
+            <input
+              type="text"
+              autoComplete="off"
+              spellCheck={false}
+              value={preferences.models[preferences.provider] ?? ""}
+              onChange={(event) =>
+                onChange({
+                  models: {
+                    ...preferences.models,
+                    [preferences.provider]: event.target.value.trim(),
+                  },
+                })
+              }
+              placeholder={providerFor(preferences.provider).defaultModel}
+              className="mt-2 w-full rounded-[18px] bg-raised px-4 py-3.5 text-[16px] shadow-[0_2px_10px_rgba(36,31,41,0.05)] outline-none placeholder:text-faint"
+            />
+            <span className="mt-2 block text-[14px] leading-snug text-faint">
+              {t.modelHint}
+            </span>
+          </label>
         </Section>
 
         <Section title={t.yourData}>

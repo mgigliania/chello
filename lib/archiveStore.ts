@@ -3,10 +3,10 @@
 import type { Archive } from "@/lib/types";
 import {
   emptyArchive,
-  loadApiKey,
   loadArchive,
-  saveApiKey,
+  loadKeys,
   saveArchive,
+  saveKey,
 } from "@/lib/storage";
 
 /**
@@ -19,7 +19,8 @@ import {
  */
 export interface Snapshot {
   archive: Archive;
-  apiKey: string;
+  /** One key per provider, so switching back does not mean retyping. */
+  keys: Record<string, string>;
   hydrated: boolean;
 }
 
@@ -27,7 +28,7 @@ export interface Snapshot {
  *  the same object every time, or React will re-render forever. */
 const SERVER_SNAPSHOT: Snapshot = {
   archive: emptyArchive(),
-  apiKey: "",
+  keys: {},
   hydrated: false,
 };
 
@@ -45,7 +46,7 @@ export function subscribe(listener: () => void): () => void {
   if (!snapshot.hydrated) {
     snapshot = {
       archive: loadArchive(),
-      apiKey: loadApiKey(),
+      keys: loadKeys(),
       hydrated: true,
     };
     emit();
@@ -73,8 +74,8 @@ export function updateArchive(mutate: (current: Archive) => Archive): void {
   writeArchive(mutate(snapshot.archive));
 }
 
-export function writeApiKey(key: string): void {
-  snapshot = { ...snapshot, apiKey: key };
-  saveApiKey(key);
+export function writeKey(provider: string, key: string): void {
+  snapshot = { ...snapshot, keys: { ...snapshot.keys, [provider]: key } };
+  saveKey(provider, key);
   emit();
 }

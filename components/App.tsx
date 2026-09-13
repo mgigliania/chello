@@ -25,7 +25,6 @@ export function App() {
     preferences: store.preferences,
     learner: store.learner,
     apiKey: store.apiKey,
-    quality: store.preferences.quality,
     onCommit: store.commitSession,
   });
 
@@ -75,14 +74,16 @@ export function App() {
           t={t}
           learningLanguageID={store.preferences.learningLanguageID}
           meaningLanguage={store.preferences.meaningLanguage}
-          apiKey={store.apiKey}
+          provider={store.preferences.provider}
           onSetLearning={(id) =>
             store.setPreferences({ learningLanguageID: id })
           }
           onSetMeaning={(language) =>
             store.setPreferences({ meaningLanguage: language })
           }
-          onSetApiKey={store.setApiKey}
+          keys={store.keys}
+          onSetProvider={(id) => store.setPreferences({ provider: id })}
+          onSetKey={store.setKey}
           onDone={() => store.setPreferences({ hasOnboarded: true })}
         />
       </>
@@ -180,10 +181,10 @@ export function App() {
           t={t}
           archive={store.archive}
           preferences={store.preferences}
-          apiKey={store.apiKey}
+          keys={store.keys}
           onClose={() => setSettingsOpen(false)}
           onChange={store.setPreferences}
-          onSetApiKey={store.setApiKey}
+          onSetKey={store.setKey}
           onReplaceArchive={store.replaceArchive}
           onDeleteEverything={store.deleteEverything}
         />

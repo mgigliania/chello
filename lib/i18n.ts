@@ -70,9 +70,18 @@ const en = {
   themeSystem: "Match my device",
   themeLight: "Light",
   themeDark: "Dark",
-  apiKey: "Your Anthropic API key",
+  whereItThinks: "Where Pancho thinks",
+  whichProvider: "Which service should Pancho use?",
+  freeLabel: "Free",
+  paidLabel: "Paid",
+  getFreeKey: "Get a free key",
+  getKey: "Get a key",
+  modelName: "Model name",
+  modelHint: "Only change this if Pancho says it does not know the model name.",
+  pasteKey: "Paste your key",
+  apiKey: (service: string) => `Your ${service} key`,
   apiKeyHelp:
-    "Stored in this browser only, and sent only to Anthropic. Get one at console.anthropic.com.",
+    "Stored in this browser only, and sent only to the service you picked.",
   apiKeySaved: "Key saved in this browser.",
   yourData: "Your data",
   exportBackup: "Export a backup",
@@ -93,7 +102,7 @@ const en = {
   micUnsupported:
     "This browser can't listen yet. Safari on iPhone and Chrome work best — you can still type.",
   speechUnsupported: "This browser has no voice for that language yet.",
-  keyNeeded: "Add your Anthropic API key in Settings to start talking.",
+  keyNeeded: "Add a key in Settings to start talking — the free ones take a minute.",
   somethingWentWrong: "Something went wrong. Try again.",
 };
 
@@ -159,9 +168,18 @@ const es: Dictionary = {
   themeSystem: "Como mi dispositivo",
   themeLight: "Claro",
   themeDark: "Oscuro",
-  apiKey: "Tu clave de API de Anthropic",
+  whereItThinks: "Dónde piensa Pancho",
+  whichProvider: "¿Qué servicio debe usar Pancho?",
+  freeLabel: "Gratis",
+  paidLabel: "De pago",
+  getFreeKey: "Consigue una clave gratis",
+  getKey: "Consigue una clave",
+  modelName: "Nombre del modelo",
+  modelHint: "Cámbialo solo si Pancho dice que no conoce el nombre del modelo.",
+  pasteKey: "Pega tu clave",
+  apiKey: (service: string) => `Tu clave de ${service}`,
   apiKeyHelp:
-    "Se guarda solo en este navegador y se envía solo a Anthropic. Consíguela en console.anthropic.com.",
+    "Se guarda solo en este navegador y se envía solo al servicio que elijas.",
   apiKeySaved: "Clave guardada en este navegador.",
   yourData: "Tus datos",
   exportBackup: "Exportar una copia",
@@ -183,7 +201,7 @@ const es: Dictionary = {
   micUnsupported:
     "Este navegador aún no puede escuchar. Safari en iPhone y Chrome funcionan mejor; también puedes escribir.",
   speechUnsupported: "Este navegador aún no tiene voz para ese idioma.",
-  keyNeeded: "Añade tu clave de API de Anthropic en Ajustes para empezar.",
+  keyNeeded: "Añade una clave en Ajustes para empezar: las gratuitas tardan un minuto.",
   somethingWentWrong: "Algo ha salido mal. Inténtalo de nuevo.",
 };
 
@@ -247,9 +265,18 @@ const pt: Dictionary = {
   themeSystem: "Igual ao meu aparelho",
   themeLight: "Claro",
   themeDark: "Escuro",
-  apiKey: "Sua chave de API da Anthropic",
+  whereItThinks: "Onde o Pancho pensa",
+  whichProvider: "Qual serviço o Pancho deve usar?",
+  freeLabel: "Grátis",
+  paidLabel: "Pago",
+  getFreeKey: "Pegue uma chave grátis",
+  getKey: "Pegue uma chave",
+  modelName: "Nome do modelo",
+  modelHint: "Só mude isto se o Pancho disser que não conhece o nome do modelo.",
+  pasteKey: "Cole sua chave",
+  apiKey: (service: string) => `Sua chave de ${service}`,
   apiKeyHelp:
-    "Guardada só neste navegador e enviada só para a Anthropic. Pegue a sua em console.anthropic.com.",
+    "Guardada só neste navegador e enviada só para o serviço que você escolher.",
   apiKeySaved: "Chave guardada neste navegador.",
   yourData: "Seus dados",
   exportBackup: "Exportar uma cópia",
@@ -271,7 +298,7 @@ const pt: Dictionary = {
   micUnsupported:
     "Este navegador ainda não consegue ouvir. Safari no iPhone e Chrome funcionam melhor; você também pode escrever.",
   speechUnsupported: "Este navegador ainda não tem voz para esse idioma.",
-  keyNeeded: "Adicione sua chave de API da Anthropic nos Ajustes para começar.",
+  keyNeeded: "Adicione uma chave nos Ajustes para começar: as gratuitas levam um minuto.",
   somethingWentWrong: "Algo deu errado. Tente de novo.",
 };
 
@@ -335,9 +362,18 @@ const it: Dictionary = {
   themeSystem: "Come il dispositivo",
   themeLight: "Chiaro",
   themeDark: "Scuro",
-  apiKey: "La tua chiave API di Anthropic",
+  whereItThinks: "Dove pensa Pancho",
+  whichProvider: "Quale servizio deve usare Pancho?",
+  freeLabel: "Gratis",
+  paidLabel: "A pagamento",
+  getFreeKey: "Ottieni una chiave gratis",
+  getKey: "Ottieni una chiave",
+  modelName: "Nome del modello",
+  modelHint: "Cambialo solo se Pancho dice di non conoscere il nome del modello.",
+  pasteKey: "Incolla la tua chiave",
+  apiKey: (service: string) => `La tua chiave di ${service}`,
   apiKeyHelp:
-    "Salvata solo in questo browser e inviata solo ad Anthropic. Ottienila su console.anthropic.com.",
+    "Salvata solo in questo browser e inviata solo al servizio che scegli.",
   apiKeySaved: "Chiave salvata in questo browser.",
   yourData: "I tuoi dati",
   exportBackup: "Esporta una copia",
@@ -359,7 +395,7 @@ const it: Dictionary = {
   micUnsupported:
     "Questo browser non può ancora ascoltare. Safari su iPhone e Chrome funzionano meglio; puoi comunque scrivere.",
   speechUnsupported: "Questo browser non ha ancora una voce per quella lingua.",
-  keyNeeded: "Aggiungi la tua chiave API di Anthropic nelle Impostazioni per iniziare.",
+  keyNeeded: "Aggiungi una chiave nelle Impostazioni per iniziare: quelle gratuite richiedono un minuto.",
   somethingWentWrong: "Qualcosa è andato storto. Riprova.",
 };
 
@@ -423,9 +459,18 @@ const fr: Dictionary = {
   themeSystem: "Comme mon appareil",
   themeLight: "Clair",
   themeDark: "Sombre",
-  apiKey: "Ta clé API Anthropic",
+  whereItThinks: "Où Pancho réfléchit",
+  whichProvider: "Quel service Pancho doit-il utiliser ?",
+  freeLabel: "Gratuit",
+  paidLabel: "Payant",
+  getFreeKey: "Obtiens une clé gratuite",
+  getKey: "Obtiens une clé",
+  modelName: "Nom du modèle",
+  modelHint: "Ne le change que si Pancho dit ne pas connaître le nom du modèle.",
+  pasteKey: "Colle ta clé",
+  apiKey: (service: string) => `Ta clé ${service}`,
   apiKeyHelp:
-    "Conservée uniquement dans ce navigateur et envoyée uniquement à Anthropic. Obtiens-la sur console.anthropic.com.",
+    "Conservée uniquement dans ce navigateur et envoyée uniquement au service que tu choisis.",
   apiKeySaved: "Clé enregistrée dans ce navigateur.",
   yourData: "Tes données",
   exportBackup: "Exporter une sauvegarde",
@@ -447,7 +492,7 @@ const fr: Dictionary = {
   micUnsupported:
     "Ce navigateur ne peut pas encore écouter. Safari sur iPhone et Chrome fonctionnent le mieux ; tu peux aussi écrire.",
   speechUnsupported: "Ce navigateur n'a pas encore de voix pour cette langue.",
-  keyNeeded: "Ajoute ta clé API Anthropic dans les Réglages pour commencer.",
+  keyNeeded: "Ajoute une clé dans les Réglages pour commencer : les gratuites prennent une minute.",
   somethingWentWrong: "Quelque chose s'est mal passé. Réessaie.",
 };
 

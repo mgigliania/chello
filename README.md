@@ -12,8 +12,8 @@ and **English**, with meaning subtitles in ten languages and an interface in
 five.
 
 It is a web app, so there is no App Store, no Xcode and no Mac. It runs on a
-free Vercel account, and speech in and out uses the phone's own voice engines —
-so the only thing that ever costs money is the text the model writes.
+free Vercel account, speech in and out uses the phone's own voice engines, and
+it can think on a free API tier — so a working install can cost nothing at all.
 
 ## Put it online
 
@@ -24,11 +24,11 @@ Four steps, about ten minutes, nothing to pay:
 2. Click **Add New… → Project** and **Import** this repository.
 3. Change nothing on the next screen — Vercel recognises Next.js — and click
    **Deploy**.
-4. Open the link it gives you, pick a language, and paste an Anthropic API key
-   from [console.anthropic.com](https://console.anthropic.com).
+4. Open the link it gives you, pick a language, and paste a free API key from
+   [Google AI Studio](https://aistudio.google.com/apikey). No card needed.
 
 Hosting is free on Vercel's Hobby plan, and each person who uses the app enters
-their own key, so conversations are billed to them rather than to you.
+their own key, so nothing is ever billed to you.
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/import?s=https%3A%2F%2Fgithub.com%2Fmgigliania%2Fchello)
 
@@ -89,18 +89,34 @@ The difficulty only rises after two clean turns in a row, and drops
 straight away after one breakdown. None of this is a CEFR level or a
 certificate, and the app never claims it is.
 
-## Privacy and cost
+## Where it thinks, and what it costs
+
+Pancho only ever asks a provider for text, so which provider answers is a
+setting rather than a rewrite. Three are built in:
+
+| | Cost | Notes |
+| --- | --- | --- |
+| **Google Gemini** | Free | No card required, no expiry. The default. |
+| **Groq** | Free | Noticeably the fastest — replies land almost instantly. |
+| **Claude** | Paid | The best teacher of the three. |
+
+Model IDs get retired — Groq withdrew its Llama models in August 2026 — so
+Settings has a model-name box. If a provider renames a model, type the new
+name; no code change, no redeploy.
+
+Speech recognition and synthesis use the browser's own engines, so audio never
+reaches a paid API at all. Only the text costs anything, and on the free tiers
+it costs nothing. On Claude, a ten-minute conversation runs about four cents.
+
+## Privacy
 
 Conversations, words and settings are stored **in your browser** and nowhere
 else. There is no Pancho account and no Pancho server holding your data.
 
-Your Anthropic API key is kept in that browser's local storage, excluded from
-learning backups, and passed straight through this app's own API route to
-Anthropic — never logged, never persisted.
-
-Speech recognition and speech synthesis use the browser's built-in engines, so
-audio never reaches a paid API. A conversation costs only its text tokens,
-which for ordinary use is cents rather than dollars.
+Your API key is kept in that browser's local storage, excluded from learning
+backups, and passed straight through this app's own API route to the provider
+you chose — never logged, never persisted. Each provider gets its own slot, so
+switching back does not mean retyping.
 
 ## Running it locally
 
@@ -140,6 +156,8 @@ lib/
   languages/  One module per language: voice, writing and lemma guidance
   teaching.ts The tutor's standing instructions and the assessment rubric
   learning.ts Evidence validation and the recall model — the rules above
+  providers.ts The three services, their models, and which are free
+  model.ts    One call, two request shapes (OpenAI-compatible and Anthropic)
   speech.ts   Web Speech in and out, with the restarts mobile needs
   store.ts    The archive, as an external store
 tests/        The learning engine's behaviour, pinned

@@ -1,11 +1,5 @@
 import { NextResponse } from "next/server";
-import {
-  UpstreamError,
-  modelFor,
-  resolveKey,
-  streamText,
-  type Message,
-} from "@/lib/anthropic";
+import { failure, setup, streamText, type Message } from "@/lib/model";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -13,6 +7,8 @@ export const dynamic = "force-dynamic";
 interface Body {
   system?: string;
   messages?: Message[];
+  provider?: string;
+  model?: string;
   quality?: string;
   maxTokens?: number;
 }
@@ -28,7 +24,6 @@ function isMessage(value: unknown): value is Message {
 
 export async function POST(request: Request) {
   try {
-    const key = resolveKey(request);
     const body = (await request.json()) as Body;
     const messages = (body.messages ?? []).filter(isMessage);
     if (messages.length === 0) {
@@ -36,8 +31,7 @@ export async function POST(request: Request) {
     }
 
     const stream = await streamText({
-      key,
-      model: modelFor(body.quality),
+      ...setup(request, body),
       system: String(body.system ?? ""),
       messages,
       maxTokens: Math.min(1024, Math.max(64, body.maxTokens ?? 400)),
@@ -53,9 +47,7 @@ export async function POST(request: Request) {
       },
     });
   } catch (error) {
-    const status = error instanceof UpstreamError ? error.status : 500;
-    const message =
-      error instanceof Error ? error.message : "The request was rejected.";
+    const { message, status } = failure(error);
     return NextResponse.json({ error: message }, { status });
   }
 }

@@ -80,6 +80,11 @@ export interface Preferences {
   interests: string;
   hasOnboarded: boolean;
   speechRate: number;
+  /** Which service answers. Two of the three are free. */
+  provider: string;
+  /** Model name typed in Settings, per provider. Providers retire model IDs,
+   *  so this is the escape hatch that avoids waiting on a code change. */
+  models: Record<string, string>;
   /** "balanced" for a fast partner, "best" for the deeper model. */
   quality: "balanced" | "best";
   /** "system" follows the device; the others override it in both directions. */

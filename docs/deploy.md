@@ -14,12 +14,14 @@ like a normal app.
 **Hosting: free.** Vercel's Hobby plan is free for personal projects and this
 app fits inside it comfortably.
 
-**The AI: whoever uses it pays.** By default each person enters their own
-Anthropic API key the first time they open the app, and it is billed to them,
-not to you. You pay nothing, no matter how many people you share the link with.
+**The AI: free.** Pancho ships with two free providers and one paid one. The
+default is Google Gemini, whose free tier needs no card and does not expire.
+Each person who uses your link enters their own key, so nothing reaches your
+bill even if you switch to the paid option yourself.
 
-If you would rather cover it for a few close friends, see
-[Paying for your friends](#paying-for-your-friends) at the bottom.
+The free tiers have daily caps (Gemini: about 1,500 requests a day, which is
+far more than one person can talk through). If you hit one, Settings lets you
+switch to the other free provider in two taps.
 
 ---
 
@@ -66,10 +68,14 @@ fine.
 2. Go through the two setup screens — pick a language, pick a subtitle language.
 3. On the last screen, paste an Anthropic API key.
 
-To get a key: go to [console.anthropic.com](https://console.anthropic.com),
-sign in, open **API keys**, and click **Create key**. You will need to add a
-small amount of credit to the account — five dollars goes a very long way,
-because Pancho only pays for text, never for audio.
+To get a free key: go to
+[aistudio.google.com/apikey](https://aistudio.google.com/apikey), sign in with
+a Google account, and click **Create API key**. There is no card to enter and
+nothing to pay. Copy the key that starts with `AIza` and paste it into Pancho.
+
+Prefer something else? Settings has **Groq** (also free, and the fastest of the
+three) and **Claude** (paid, and the best teacher). You can switch whenever,
+and each service keeps its own key, so you never retype one.
 
 4. Tap **Start talking**, allow the microphone, and say hello.
 
@@ -110,33 +116,45 @@ Domains**, and rename it or add a domain you own.
 
 ---
 
-## Paying for your friends
+## Sparing your friends the setup
 
 If you would rather nobody had to get their own key:
 
 1. On Vercel, open your project and go to **Settings → Environment Variables**.
-2. Add a variable named `ANTHROPIC_API_KEY` with your key as the value.
+2. Add a variable named for the provider you want everyone to use —
+   `GOOGLE_API_KEY`, `GROQ_API_KEY`, or `ANTHROPIC_API_KEY` — with your key as
+   the value.
 3. Go to the **Deployments** tab and redeploy the latest one so it picks the
    variable up.
 
 Anyone who opens the link can now talk without entering anything, and every
-conversation is billed to you.
+conversation runs against your allowance.
 
 **Be careful with this.** There is no sign-in, so anyone who has the link — or
-finds it — can spend your credit. Only do it if you are sharing the link
-privately, and set a monthly spending limit in the Anthropic console first.
+finds it — can use it up. With a free provider the worst case is that your
+daily cap is spent by strangers; with Claude it costs you real money, so set a
+spending limit in the console first.
 
 ---
 
 ## If something goes wrong
 
-**"Add your Anthropic API key in Settings to start talking."**
-The key is missing or was not saved. Open Settings, paste it again, and check
-it begins with `sk-ant-`.
+**"Add a key in Settings to start talking."**
+The key is missing or was not saved. Open Settings, check the right service is
+selected, and paste it again.
 
-**"That API key was not accepted."**
-The key is wrong, was revoked, or has no credit. Make a fresh one in the
-Anthropic console and check the account's balance.
+**"That … key was not accepted."**
+The key is wrong, was revoked, or belongs to a different service than the one
+selected. Each provider has its own key slot — a Google key in the Claude slot
+will not work.
+
+**"… free allowance is used up for now."**
+You hit the daily or per-minute cap. Wait, or switch to the other free provider
+in Settings.
+
+**"… does not know that model name."**
+A provider retired that model. Open Settings, clear the **Model name** box to
+go back to the default, or type the current name from the provider's docs.
 
 **"Pancho needs microphone access to hear you."**
 Safari asks once. If you said no, go to **Settings → Safari → Microphone** on
