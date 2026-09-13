@@ -16,14 +16,27 @@ so the only thing that ever costs money is the text the model writes.
 
 ## Put it online
 
+Four steps, about ten minutes, nothing to pay:
+
+1. Sign in at [vercel.com](https://vercel.com) with **Continue with GitHub**,
+   and choose the free **Hobby** plan.
+2. Click **Add New… → Project** and **Import** this repository.
+3. Change nothing on the next screen — Vercel recognises Next.js — and click
+   **Deploy**.
+4. Open the link it gives you, pick a language, and paste an Anthropic API key
+   from [console.anthropic.com](https://console.anthropic.com).
+
+Hosting is free on Vercel's Hobby plan, and each person who uses the app enters
+their own key, so conversations are billed to them rather than to you.
+
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/import?s=https%3A%2F%2Fgithub.com%2Fmgigliania%2Fchello)
 
-Click the button, sign in with GitHub, and press **Deploy**. It costs nothing:
-Vercel's free plan covers it, and each person who uses the app enters their own
-Anthropic key, so their conversations are billed to them rather than to you.
+The button is a shortcut past steps 2 and 3; if it does not land on the import
+screen, the four steps above always work.
 
 → **[The same thing, click by click](docs/deploy.md)** — including how to add it
-to an iPhone home screen, and how to pay for your friends instead.
+to an iPhone home screen, what each error message means, and how to pay for
+your friends instead of asking them for a key.
 
 ---
 

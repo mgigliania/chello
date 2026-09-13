@@ -32,8 +32,8 @@ If you would rather cover it for a few close friends, see
 
 ## Step 2 — Import the repository
 
-The quickest way is the button in the [README](../README.md) — it opens Vercel
-with the repository already selected. Otherwise, by hand:
+There is a shortcut button in the [README](../README.md) that jumps straight to
+the import screen. If it does not work, do it by hand — this always works:
 
 1. On your Vercel dashboard, click **Add New… → Project**.
 2. Find **chello** in the list of your repositories and click **Import**.
@@ -48,6 +48,17 @@ with the repository already selected. Otherwise, by hand:
 
 Wait about a minute. When it finishes you will see a screen with a preview
 image and a link.
+
+### One tidy-up worth doing
+
+Your repository's **default branch** is currently `claude/personal-ai-agent-app-f03pk2`
+rather than `main`. Vercel deploys whichever branch is the default, so this
+changes nothing today — both branches hold exactly the same app. But it means
+future changes made on `main` would not reach your live site.
+
+To fix it, on GitHub: **Settings → General → Default branch → the ⇄ switch
+icon → choose `main` → Update**. Do it before or after deploying; either is
+fine.
 
 ## Step 3 — Open it and add your key
 
