@@ -10,9 +10,16 @@ interface Props {
   children: ReactNode;
 }
 
+/**
+ * A fixed-height frame with one scrolling region.
+ *
+ * The height is definite rather than a minimum so the Talk screen can size
+ * itself to what is left: its orb shrinks to fit, instead of the page growing
+ * and pushing the microphone under the tab bar. Taller screens simply scroll.
+ */
 export function Shell({ onOpenSettings, settingsLabel, children }: Props) {
   return (
-    <div className="mx-auto flex min-h-dvh w-full max-w-md flex-col px-5">
+    <div className="mx-auto flex h-dvh w-full max-w-md flex-col px-5">
       <header
         className="flex shrink-0 items-center justify-between"
         style={{ paddingTop: "max(14px, env(safe-area-inset-top))" }}
@@ -27,7 +34,9 @@ export function Shell({ onOpenSettings, settingsLabel, children }: Props) {
           <SlidersIcon size={21} />
         </button>
       </header>
-      {children}
+      <div className="no-scrollbar flex min-h-0 flex-1 flex-col overflow-y-auto">
+        {children}
+      </div>
     </div>
   );
 }

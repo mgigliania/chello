@@ -152,17 +152,25 @@ export function TalkScreen({
   };
 
   return (
-    <div className="flex flex-1 flex-col pb-28">
-      <div className="mt-3 flex justify-center">
+    <div className="flex min-h-0 flex-1 flex-col pb-28">
+      <div className="mt-3 flex shrink-0 justify-center">
         <span className="rounded-full bg-iris-soft px-5 py-2 text-[15px] font-medium text-ink/80">
           {title}
         </span>
       </div>
 
       <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-1 py-2">
-        <Orb mood={status} energy={energy} className="h-[46vw] max-h-56 w-[46vw] max-w-56" />
+        {/* The orb is the one part that gives way: it shrinks so a long reply
+            or a warning banner never pushes the controls off the screen. */}
+        <div className="flex min-h-16 w-full flex-1 items-center justify-center">
+          <Orb
+            mood={status}
+            energy={energy}
+            className="aspect-square h-full max-h-52 w-auto"
+          />
+        </div>
 
-        <p className="mt-3 text-[15px] text-muted" aria-live="polite">
+        <p className="mt-3 shrink-0 text-[15px] text-muted" aria-live="polite">
           {statusLabel}
         </p>
 
@@ -195,7 +203,7 @@ export function TalkScreen({
         )}
       </div>
 
-      <div className="mt-auto flex flex-col items-center gap-3">
+      <div className="mt-auto flex shrink-0 flex-col items-center gap-2.5">
         <div className="flex w-full items-center justify-center gap-8">
           <button
             type="button"

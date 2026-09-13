@@ -103,7 +103,7 @@ export function App() {
               conversation.clearError();
               if (conversation.error === "key") setSettingsOpen(true);
             }}
-            className="rise mt-3 w-full rounded-[18px] bg-butter px-4 py-3 text-left text-[15px] leading-snug text-ink"
+            className="rise mt-3 w-full shrink-0 rounded-[18px] bg-butter px-4 py-3 text-left text-[15px] leading-snug text-ink"
           >
             {banner}
           </button>
