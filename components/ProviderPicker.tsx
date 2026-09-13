@@ -40,6 +40,7 @@ export function ProviderPicker({
 }: Props) {
   const current = providerFor(provider);
   const key = keys[current.id] ?? "";
+  const keyLooksWrong = key.length > 0 && !current.keyPattern.test(key);
   const model = models[current.id] ?? "";
 
   // Cached per provider, so switching back and forth does not refetch, and so
@@ -133,9 +134,16 @@ export function ProviderPicker({
           placeholder={current.keyHint}
           className="mt-2 w-full rounded-[18px] bg-raised px-4 py-3.5 text-[16px] shadow-[0_2px_10px_rgba(36,31,41,0.05)] outline-none placeholder:text-faint"
         />
-        <span className="mt-2 block text-[14px] leading-snug text-faint">
-          {t.apiKeyHelp}
-        </span>
+        {keyLooksWrong ? (
+          <span className="mt-2 block rounded-[14px] bg-butter px-3.5 py-2.5 text-[14px] leading-snug text-ink">
+            {t.keyLooksWrong}{" "}
+            <span className="font-mono">{current.keyHint}</span>
+          </span>
+        ) : (
+          <span className="mt-2 block text-[14px] leading-snug text-faint">
+            {t.apiKeyHelp}
+          </span>
+        )}
       </label>
 
       <label className="mt-5 block">

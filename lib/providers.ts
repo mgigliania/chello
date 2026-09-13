@@ -25,6 +25,9 @@ export interface Provider {
   deepModel: string;
   keyURL: string;
   keyHint: string;
+  /** Loose prefix check, so a wrong paste is caught before it costs a request.
+   *  Deliberately permissive: a false warning is worse than a missed one. */
+  keyPattern: RegExp;
   /** Server-side key, for an operator who would rather pay for everyone. */
   envVar: string;
   /** A public catalogue of this provider's models, where one exists. Used to
@@ -43,7 +46,11 @@ export const PROVIDERS: Provider[] = [
     defaultModel: "gemini-2.5-flash",
     deepModel: "gemini-2.5-pro",
     keyURL: "https://aistudio.google.com/apikey",
-    keyHint: "AIza…",
+    // Google moved to "auth keys" (AQ.Ab…) during 2026 and is retiring the
+    // older AIza "standard keys"; both are accepted as Bearer tokens on the
+    // OpenAI-compatible endpoint, so both are allowed here.
+    keyHint: "AQ.Ab…",
+    keyPattern: /^(AQ\.|AIza)/,
     envVar: "GOOGLE_API_KEY",
   },
   {
@@ -57,6 +64,7 @@ export const PROVIDERS: Provider[] = [
     deepModel: "openai/gpt-oss-120b",
     keyURL: "https://console.groq.com/keys",
     keyHint: "gsk_…",
+    keyPattern: /^gsk_/,
     envVar: "GROQ_API_KEY",
   },
   {
@@ -72,6 +80,7 @@ export const PROVIDERS: Provider[] = [
     deepModel: "",
     keyURL: "https://openrouter.ai/keys",
     keyHint: "sk-or-v1-…",
+    keyPattern: /^sk-or-/,
     envVar: "OPENROUTER_API_KEY",
     catalogueURL: "https://openrouter.ai/api/v1/models",
   },
@@ -86,6 +95,7 @@ export const PROVIDERS: Provider[] = [
     deepModel: "claude-opus-5",
     keyURL: "https://console.anthropic.com/settings/keys",
     keyHint: "sk-ant-…",
+    keyPattern: /^sk-ant-/,
     envVar: "ANTHROPIC_API_KEY",
   },
 ];

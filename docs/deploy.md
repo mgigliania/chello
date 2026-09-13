@@ -71,7 +71,11 @@ fine.
 To get a free key: go to
 [aistudio.google.com/apikey](https://aistudio.google.com/apikey), sign in with
 a Google account, and click **Create API key**. There is no card to enter and
-nothing to pay. Copy the key that starts with `AIza` and paste it into Pancho.
+nothing to pay.
+
+The key you get will start with **`AQ.Ab`**. That is correct — Google moved to
+these "auth keys" during 2026 and is retiring the older `AIza` ones. Both work
+with Pancho; new keys are all `AQ.`. Copy the whole thing, dots included.
 
 Prefer something else? Settings has **Groq** (also free, and the fastest of the
 three) and **Claude** (paid, and the best teacher). You can switch whenever,
@@ -146,7 +150,8 @@ selected, and paste it again.
 **"That … key was not accepted."**
 The key is wrong, was revoked, or belongs to a different service than the one
 selected. Each provider has its own key slot — a Google key in the Claude slot
-will not work.
+will not work. Pancho also warns you as you paste if a key does not look like
+it belongs to the selected service.
 
 **"… free allowance is used up for now."**
 You hit the daily or per-minute cap. Wait, or switch to the other free provider

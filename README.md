@@ -25,7 +25,9 @@ Four steps, about ten minutes, nothing to pay:
 3. Change nothing on the next screen — Vercel recognises Next.js — and click
    **Deploy**.
 4. Open the link it gives you, pick a language, and paste a free API key from
-   [Google AI Studio](https://aistudio.google.com/apikey). No card needed.
+   [Google AI Studio](https://aistudio.google.com/apikey). No card needed. The
+   key starts `AQ.Ab` — Google's current "auth key" format, which replaced the
+   older `AIza` keys during 2026.
 
 Hosting is free on Vercel's Hobby plan, and each person who uses the app enters
 their own key, so nothing is ever billed to you.

@@ -158,9 +158,10 @@ function readableError(status: number, detail: string, provider: Provider): stri
   if (status >= 500) return `${provider.label} is briefly unavailable. Try again.`;
 
   const upstream = upstreamMessage(detail);
-  // Google answers a bad key with 400 "Please pass a valid API key" rather
-  // than a 401, so the status alone does not identify the problem.
-  if (upstream && /api[ _-]?key/i.test(upstream)) {
+  // Google answers a bad key with a 400 rather than a 401, and words it two
+  // ways depending on the key generation: "Please pass a valid API key" for
+  // the older AIza keys, "Invalid Auth key." for the current AQ. ones.
+  if (upstream && /(api|auth)[ _-]?key/i.test(upstream)) {
     return `That ${provider.label} key was not accepted. Check it in Settings.`;
   }
   if (upstream && /quota|rate limit|resource[ _-]?exhausted/i.test(upstream)) {

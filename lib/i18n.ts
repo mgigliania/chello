@@ -83,6 +83,7 @@ const en = {
   modelName: "Model name",
   modelHint: "Only change this if Pancho says it does not know the model name.",
   pasteKey: "Paste your key",
+  keyLooksWrong: "That doesn't look like a key for this service. Check you copied the whole thing.",
   apiKey: (service: string) => `Your ${service} key`,
   apiKeyHelp:
     "Stored in this browser only, and sent only to the service you picked.",
@@ -185,6 +186,7 @@ const es: Dictionary = {
   modelName: "Nombre del modelo",
   modelHint: "Cámbialo solo si Pancho dice que no conoce el nombre del modelo.",
   pasteKey: "Pega tu clave",
+  keyLooksWrong: "Esto no parece una clave de este servicio. Comprueba que lo copiaste entero.",
   apiKey: (service: string) => `Tu clave de ${service}`,
   apiKeyHelp:
     "Se guarda solo en este navegador y se envía solo al servicio que elijas.",
@@ -286,6 +288,7 @@ const pt: Dictionary = {
   modelName: "Nome do modelo",
   modelHint: "Só mude isto se o Pancho disser que não conhece o nome do modelo.",
   pasteKey: "Cole sua chave",
+  keyLooksWrong: "Isso não parece uma chave deste serviço. Confira se copiou tudo.",
   apiKey: (service: string) => `Sua chave de ${service}`,
   apiKeyHelp:
     "Guardada só neste navegador e enviada só para o serviço que você escolher.",
@@ -387,6 +390,7 @@ const it: Dictionary = {
   modelName: "Nome del modello",
   modelHint: "Cambialo solo se Pancho dice di non conoscere il nome del modello.",
   pasteKey: "Incolla la tua chiave",
+  keyLooksWrong: "Questa non sembra una chiave di questo servizio. Controlla di averla copiata tutta.",
   apiKey: (service: string) => `La tua chiave di ${service}`,
   apiKeyHelp:
     "Salvata solo in questo browser e inviata solo al servizio che scegli.",
@@ -488,6 +492,7 @@ const fr: Dictionary = {
   modelName: "Nom du modèle",
   modelHint: "Ne le change que si Pancho dit ne pas connaître le nom du modèle.",
   pasteKey: "Colle ta clé",
+  keyLooksWrong: "Ça ne ressemble pas à une clé de ce service. Vérifie que tu as tout copié.",
   apiKey: (service: string) => `Ta clé ${service}`,
   apiKeyHelp:
     "Conservée uniquement dans ce navigateur et envoyée uniquement au service que tu choisis.",
